@@ -26,7 +26,7 @@ class PhotographerProfileResource extends Resource
 
     protected static ?string $modelLabel = 'Profil Jurugambar';
 
-    protected static ?string $navigationGroup = 'Moderation';
+    protected static ?string $navigationGroup = 'Moderasi';
 
     protected static ?int $navigationSort = 1;
 

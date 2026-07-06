@@ -15,7 +15,27 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-star';
+
+    protected static ?string $navigationLabel = 'Ulasan';
+
+    protected static ?string $modelLabel = 'Ulasan';
+
+    protected static ?string $navigationGroup = 'Moderasi';
+
+    protected static ?int $navigationSort = 2;
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Review::query()->whereNull('published_at')->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,24 +58,26 @@ class ReviewResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('bookingRequest.profile.business_name')
-                    ->label('Photographer')
+                    ->label('Studio')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('bookingRequest.guest_name')
-                    ->label('Client Name')
+                    ->label('Pelanggan')
                     ->state(fn ($record) => $record->bookingRequest->guest_name ?? $record->bookingRequest->client?->name)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('rating')
+                    ->label('Rating')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('comment')
+                    ->label('Komen')
                     ->limit(50)
                     ->searchable(),
                 Tables\Columns\IconColumn::make('published_at')
                     ->label('Status')
                     ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-clock')
                     ->color(fn ($state) => $state ? 'success' : 'warning')
-                    ->tooltip(fn ($state) => $state ? 'Published' : 'Pending Moderation'),
+                    ->tooltip(fn ($state) => $state ? 'Diterbitkan' : 'Menunggu moderasi'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -63,10 +85,10 @@ class ReviewResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('published_at')
-                    ->label('Moderation Status')
-                    ->placeholder('All Reviews')
-                    ->trueLabel('Published')
-                    ->falseLabel('Pending Moderation')
+                    ->label('Status Moderasi')
+                    ->placeholder('Semua ulasan')
+                    ->trueLabel('Diterbitkan')
+                    ->falseLabel('Menunggu moderasi')
                     ->queries(
                         true: fn (Builder $query) => $query->whereNotNull('published_at'),
                         false: fn (Builder $query) => $query->whereNull('published_at'),
@@ -76,13 +98,13 @@ class ReviewResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('publish')
-                    ->label('Publish')
+                    ->label('Terbitkan')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->action(fn ($record) => $record->update(['published_at' => now()]))
                     ->visible(fn ($record) => is_null($record->published_at)),
                 Tables\Actions\Action::make('unpublish')
-                    ->label('Unpublish')
+                    ->label('Sorok')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->action(fn ($record) => $record->update(['published_at' => null]))

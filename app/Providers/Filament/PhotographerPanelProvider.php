@@ -25,7 +25,7 @@ class PhotographerPanelProvider extends PanelProvider
         return $panel
             ->id('photographer')
             ->path('photographer')
-            ->brandLogo(fn () => view('filament.photographer.logo'))
+            ->brandLogo(fn () => view('filament.logo'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.svg'))
             ->colors([
