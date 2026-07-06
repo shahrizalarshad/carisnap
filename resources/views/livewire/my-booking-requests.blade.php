@@ -14,8 +14,18 @@
     </div>
 
     @if ($bookings->isEmpty())
-        <x-ui.card class="p-6 text-center py-12">
-            <p class="text-gray-500 mb-4">Belum ada permintaan tempahan lagi.</p>
+        <x-ui.card class="p-8 text-center py-16 border-dashed">
+            <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </div>
+            <h2 class="text-lg font-heading font-semibold text-gray-900 mb-2">Belum ada tempahan lagi</h2>
+            <p class="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+                @if ($status)
+                    Tiada permintaan dengan status ini. Cuba tukar filter atau cari jurugambar baharu.
+                @else
+                    Mula dengan cari jurugambar, hantar permintaan, dan semak sebut harga di sini.
+                @endif
+            </p>
             <x-ui.button variant="primary" href="{{ route('photographers.index') }}" wire:navigate>
                 Cari Jurugambar
             </x-ui.button>

@@ -4,6 +4,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Livewire\BrowsePhotographers;
+use App\Livewire\HomePage;
 use App\Livewire\MyBookingRequests;
 use App\Livewire\PhotographerOnboarding;
 use App\Livewire\ReviewQuote;
@@ -12,9 +13,7 @@ use App\Livewire\ShowPhotographerProfile;
 use App\Livewire\SubmitReview;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', HomePage::class)->name('home');
 
 Route::get('/photographers', BrowsePhotographers::class)->name('photographers.index');
 

@@ -26,7 +26,7 @@
 
             <!-- Header -->
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-                <h2 class="text-xl font-heading font-bold text-gray-900">Booking Request</h2>
+                <h2 class="text-xl font-heading font-bold text-gray-900">Permintaan Tempahan</h2>
                 <button type="button" x-on:click="open = false" class="text-gray-400 hover:text-gray-600 p-2 -mr-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -40,8 +40,14 @@
                             <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                         </div>
                         <h3 class="text-lg font-heading font-bold text-gray-900 mb-2">Permintaan Berjaya Dihantar!</h3>
-                        <p class="text-gray-600 mb-6">Permintaan anda telah dihantar kepada jurugambar. Mereka akan membalas dalam masa 24 jam.</p>
-                        <x-ui.button variant="primary" class="w-full" x-on:click="open = false">Tutup</x-ui.button>
+                        <p class="text-gray-600 mb-4">Permintaan anda telah dihantar kepada jurugambar.</p>
+                        <div class="text-left bg-gray-50 rounded-xl p-4 mb-6 space-y-2 text-sm text-gray-600">
+                            <p class="font-medium text-gray-900 mb-2">Apa seterusnya?</p>
+                            <p>① Jurugambar semak permintaan anda (biasanya dalam 24 jam)</p>
+                            <p>② Terima sebut harga melalui link e-mel atau di halaman Tempahan Saya</p>
+                            <p>③ Terima quote & deal terus via WhatsApp</p>
+                        </div>
+                        <x-ui.button variant="primary" class="w-full" x-on:click="open = false">Faham, Tutup</x-ui.button>
                     </div>
                 @else
                     <form wire:submit="submit" class="space-y-4">

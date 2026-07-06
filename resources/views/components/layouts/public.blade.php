@@ -18,6 +18,8 @@
             <meta name="robots" content="noindex, nofollow">
         @endif
         <link rel="canonical" href="{{ $canonical }}">
+
+        <x-favicon />
         
         <!-- OpenGraph Meta Tags -->
         <meta property="og:site_name" content="CariSnap">
@@ -52,8 +54,8 @@
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{{ route('home') }}" wire:navigate class="font-heading font-bold text-2xl tracking-tight text-brand-600">
-                            CariSnap.
+                        <a href="{{ route('home') }}" wire:navigate class="hover:opacity-90 transition-opacity" aria-label="CariSnap — laman utama">
+                            <x-ui.logo />
                         </a>
                     </div>
                     

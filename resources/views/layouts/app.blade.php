@@ -7,6 +7,8 @@
 
         <title>{{ config('app.name', 'CariSnap') }}</title>
 
+        <x-favicon />
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">

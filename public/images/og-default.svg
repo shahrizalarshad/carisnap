@@ -1,5 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#f97316"/>
-  <text x="600" y="300" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#ffffff" text-anchor="middle">CariSnap</text>
-  <text x="600" y="380" font-family="system-ui, sans-serif" font-size="32" fill="#fff7ed" text-anchor="middle">Jurugambar Perkahwinan · Klang Valley</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c026d3"/>
+      <stop offset="100%" style="stop-color:#a21caf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(600 240)">
+    <rect x="-48" y="-32" width="96" height="72" rx="14" stroke="#ffffff" stroke-width="6" fill="none"/>
+    <circle cx="0" cy="4" r="22" stroke="#ffffff" stroke-width="6" fill="none"/>
+    <circle cx="0" cy="4" r="9" fill="#ffffff"/>
+    <path d="M36 -52 L52 -36 L36 -20 Z" fill="#ffffff"/>
+  </g>
+  <text x="600" y="380" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#ffffff" text-anchor="middle">CariSnap</text>
+  <text x="600" y="450" font-family="system-ui, sans-serif" font-size="32" fill="#fae8ff" text-anchor="middle">Jurugambar Perkahwinan · Klang Valley</text>
 </svg>

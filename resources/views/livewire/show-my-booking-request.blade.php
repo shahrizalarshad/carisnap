@@ -12,6 +12,20 @@
     </div>
 
     <x-ui.card class="p-6">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Status Tempahan</h2>
+        <x-ui.booking-timeline :status="$bookingRequest->status" />
+        @if (in_array($bookingRequest->status, [\App\Enums\BookingStatus::Declined, \App\Enums\BookingStatus::Expired]))
+            <p class="mt-4 text-sm text-gray-500">
+                @if ($bookingRequest->status === \App\Enums\BookingStatus::Declined)
+                    Permintaan ini telah ditolak oleh jurugambar. Anda boleh cari jurugambar lain.
+                @else
+                    Permintaan ini telah tamat tempoh. Cuba hantar permintaan baharu.
+                @endif
+            </p>
+        @endif
+    </x-ui.card>
+
+    <x-ui.card class="p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Jurugambar</h2>
         <div class="space-y-3">
             <p class="font-medium text-gray-900">{{ $bookingRequest->profile->business_name }}</p>

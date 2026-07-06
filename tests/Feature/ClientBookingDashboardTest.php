@@ -94,6 +94,8 @@ it('allows a client to view their own booking request details', function () {
         ->get(route('bookings.show', $booking))
         ->assertOk()
         ->assertSee('Butiran Tempahan')
+        ->assertSee('Status Tempahan', false)
+        ->assertSee('Permintaan dihantar', false)
         ->assertSee('Shah Alam')
         ->assertSee('Diterima')
         ->assertSee('WhatsApp Jurugambar');

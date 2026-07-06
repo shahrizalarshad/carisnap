@@ -5,16 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'CariSnap') }}</title>
 
-        <!-- Scripts -->
+        <x-favicon />
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <a href="{{ route('home') }}" class="inline-flex flex-col items-center gap-2 hover:opacity-90 transition-opacity">
+                    <x-application-logo class="w-14 h-14 text-brand-600" />
+                    <span class="font-heading font-bold text-lg text-gray-900">Cari<span class="text-brand-600">Snap</span></span>
                 </a>
             </div>
 

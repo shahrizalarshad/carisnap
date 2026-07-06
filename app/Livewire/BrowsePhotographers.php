@@ -29,6 +29,16 @@ class BrowsePhotographers extends Component
         $this->resetPage();
     }
 
+    public function clearFilter(string $filter): void
+    {
+        if (! in_array($filter, ['location', 'budget', 'date'], true)) {
+            return;
+        }
+
+        $this->$filter = '';
+        $this->resetPage();
+    }
+
     public function updating($property)
     {
         if (in_array($property, ['location', 'budget', 'date'])) {

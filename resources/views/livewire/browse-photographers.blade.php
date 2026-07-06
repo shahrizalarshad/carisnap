@@ -5,7 +5,7 @@
             <h1 class="text-3xl font-heading font-bold text-gray-900">Cari Jurugambar</h1>
             <p class="mt-2 text-sm text-gray-500">Temui jurugambar dan videografer terbaik untuk majlis anda.</p>
         </div>
-        
+
         <!-- Mobile Filter Button -->
         <div class="sm:hidden" x-data>
             <x-ui.button variant="outline" class="w-full" @click="$dispatch('open-sheet-filters')">
@@ -73,84 +73,81 @@
         </div>
     </x-ui.bottom-sheet>
 
-    <!-- Loading State -->
-    <div wire:loading.flex wire:target="location,budget,date" class="justify-center py-8 w-full">
-        <svg class="animate-spin h-8 w-8 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    @php
+        $budgetLabels = [
+            '0-1000' => 'Bawah RM1,000',
+            '1000-3000' => 'RM1,000 – RM3,000',
+            '3000-' => 'RM3,000 ke atas',
+        ];
+        $hasActiveFilters = $location || $budget || $date;
+    @endphp
+
+    <!-- Active filter chips & result count -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        @if ($hasActiveFilters)
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-medium text-gray-500">Filter aktif:</span>
+                @if ($location)
+                    <button type="button" wire:click="clearFilter('location')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 transition-colors">
+                        {{ $location }}
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                @endif
+                @if ($budget)
+                    <button type="button" wire:click="clearFilter('budget')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 transition-colors">
+                        {{ $budgetLabels[$budget] ?? $budget }}
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                @endif
+                @if ($date)
+                    <button type="button" wire:click="clearFilter('date')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 transition-colors">
+                        {{ \Carbon\Carbon::parse($date)->locale('ms')->translatedFormat('j M Y') }}
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                @endif
+                <button type="button" wire:click="resetFilters" class="text-xs font-medium text-gray-500 hover:text-brand-600 underline">Kosongkan semua</button>
+            </div>
+        @endif
+
+        <p class="text-sm text-gray-500 sm:ml-auto" wire:loading.remove wire:target="location,budget,date">
+            @if ($profiles->total() > 0)
+                {{ $profiles->total() }} jurugambar dijumpai
+            @else
+                Tiada hasil
+            @endif
+        </p>
+    </div>
+
+    <!-- Skeleton loading -->
+    <div wire:loading wire:target="location,budget,date" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        @for ($i = 0; $i < 6; $i++)
+            <x-ui.card class="overflow-hidden animate-pulse">
+                <div class="h-56 bg-gray-200"></div>
+                <div class="p-4 space-y-3">
+                    <div class="h-5 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-100 rounded w-1/2"></div>
+                    <div class="pt-3 border-t border-gray-100 flex justify-between">
+                        <div class="h-4 bg-gray-100 rounded w-20"></div>
+                        <div class="h-4 bg-gray-200 rounded w-24"></div>
+                    </div>
+                </div>
+            </x-ui.card>
+        @endfor
     </div>
 
     <!-- Results Grid -->
-    <div class="transition-opacity duration-200 mt-8" wire:loading.class="opacity-50 pointer-events-none" wire:target="location,budget,date">
+    <div class="transition-opacity duration-200" wire:loading.class="opacity-0 pointer-events-none" wire:target="location,budget,date">
         @if ($profiles->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($profiles as $profile)
-                    <x-ui.card class="flex flex-col group hover:shadow-md transition-shadow relative">
-                        <!-- Cover Image -->
-                        <a href="/{{ $profile->slug }}" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
-                            @php
-                                $coverMedia = $profile->coverPortfolioItem?->getFirstMedia('portfolio');
-                            @endphp
-                            @if ($coverMedia)
-                                <img
-                                    src="{{ $coverMedia->getUrl('display') }}"
-                                    srcset="{{ $coverMedia->getUrl('thumbnail') }} 400w, {{ $coverMedia->getUrl('display') }} 1200w"
-                                    sizes="(max-width: 640px) 100vw, 33vw"
-                                    alt="{{ $profile->business_name }}"
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    loading="lazy"
-                                    decoding="async"
-                                >
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                </div>
-                            @endif
-
-                            <!-- Featured Badge -->
-                            @if ($profile->featured_until && $profile->featured_until->isFuture())
-                                <div class="absolute top-3 left-3">
-                                    <x-ui.badge color="brand" class="shadow-sm bg-white/90 backdrop-blur text-brand-700">
-                                        ✨ Pilihan Utama
-                                    </x-ui.badge>
-                                </div>
-                            @endif
-                        </a>
-
-                        <!-- Card Body -->
-                        <div class="p-4 flex flex-col flex-grow">
-                            <div class="flex justify-between items-start mb-1">
-                                <a href="/{{ $profile->slug }}" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
-                                    {{ $profile->business_name }}
-                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                </a>
-                            </div>
-                            
-                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                {{ $profile->location_area }}
-                            </p>
-                            
-                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
-                                <x-ui.star-rating :rating="$profile->reviews_avg_rating ?? 0" :count="$profile->reviews_count" />
-                                
-                                @if ($profile->lowestActivePackage)
-                                    <span class="text-sm font-semibold text-gray-900">
-                                        Dari RM{{ number_format($profile->lowestActivePackage->price_from) }}
-                                    </span>
-                                @else
-                                    <span class="text-xs text-gray-400 italic">Tiada pakej</span>
-                                @endif
-                            </div>
-                        </div>
-                    </x-ui.card>
+                    <x-ui.photographer-card :profile="$profile" />
                 @endforeach
             </div>
 
-            <!-- Pagination -->
             <div class="mt-8">
                 {{ $profiles->links() }}
             </div>
         @else
-            <!-- Empty State -->
             <div class="text-center py-16 px-4 bg-white rounded-2xl border border-gray-100 border-dashed">
                 <div class="w-16 h-16 bg-brand-50 text-brand-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

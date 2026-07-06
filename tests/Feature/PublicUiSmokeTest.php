@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\AvailabilityStatus;
 use App\Enums\BookingStatus;
 use App\Enums\QuoteStatus;
 use App\Models\Availability;
 use App\Models\BookingRequest;
+use App\Models\Package;
 use App\Models\PhotographerProfile;
 use App\Models\Quote;
 use App\Models\User;
@@ -85,6 +87,7 @@ it('renders malay month labels for availability on profile page', function () {
     Availability::factory()->create([
         'profile_id' => $profile->id,
         'date' => now()->addMonth()->startOfMonth()->addDays(4),
+        'status' => AvailabilityStatus::Available,
     ]);
 
     $malayMonth = now()->addMonth()->locale('ms')->translatedFormat('F');
@@ -95,12 +98,48 @@ it('renders malay month labels for availability on profile page', function () {
         ->assertSee('3 Bulan Akan Datang', false);
 });
 
-it('shows browse page with bm filter labels and loading state', function () {
+it('shows browse page with bm filter labels, chips, and loading skeleton', function () {
+    PhotographerProfile::factory()->create(['verified_at' => now()]);
+
     $this->get(route('photographers.index'))
         ->assertOk()
         ->assertSee('wire:loading', false)
         ->assertSee('location,budget,date', false)
         ->assertSee('Kawasan', false)
+        ->assertSee('1 jurugambar dijumpai', false)
         ->assertDontSee('(Location)', false)
         ->assertDontSee('(Budget)', false);
+});
+
+it('shows active filter chips when browse filters are applied', function () {
+    PhotographerProfile::factory()->create([
+        'verified_at' => now(),
+        'coverage_areas' => ['Kuala Lumpur'],
+    ]);
+
+    $this->get(route('photographers.index', ['loc' => 'Kuala Lumpur']))
+        ->assertOk()
+        ->assertSee('Filter aktif:', false)
+        ->assertSee('Kuala Lumpur', false)
+        ->assertSee('clearFilter', false);
+});
+
+it('shows hantar permintaan cta with price on photographer profile', function () {
+    $profile = PhotographerProfile::factory()->create([
+        'slug' => 'studio-harga',
+        'verified_at' => now(),
+        'business_name' => 'Studio Harga',
+    ]);
+
+    Package::factory()->create([
+        'profile_id' => $profile->id,
+        'price_from' => 2500,
+        'is_active' => true,
+    ]);
+
+    $this->get(route('photographers.show', $profile->slug))
+        ->assertOk()
+        ->assertSee('Hantar Permintaan', false)
+        ->assertSee('RM2,500', false)
+        ->assertDontSee('Hantar Booking Request', false);
 });
