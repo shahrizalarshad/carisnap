@@ -4,6 +4,7 @@ use App\Enums\UserRole;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\BrowsePhotographers;
 use App\Livewire\MyBookingRequests;
+use App\Livewire\PhotographerOnboarding;
 use App\Livewire\ReviewQuote;
 use App\Livewire\ShowMyBookingRequest;
 use App\Livewire\ShowPhotographerProfile;
@@ -27,9 +28,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-bookings', MyBookingRequests::class)->name('bookings.index');
     Route::get('/my-bookings/{bookingRequest}', ShowMyBookingRequest::class)->name('bookings.show');
 
+    Route::get('/photographer/onboarding', PhotographerOnboarding::class)
+        ->name('photographer.onboarding');
+
     Route::get('/dashboard', function () {
-        return match (auth()->user()->role) {
-            UserRole::Photographer => redirect('/photographer'),
+        $user = auth()->user();
+
+        return match ($user->role) {
+            UserRole::Photographer => $user->profile
+                ? redirect('/photographer')
+                : redirect()->route('photographer.onboarding'),
             UserRole::Admin => redirect('/admin'),
             default => redirect()->route('bookings.index'),
         };

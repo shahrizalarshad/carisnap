@@ -3,6 +3,7 @@
 use App\Enums\BookingStatus;
 use App\Livewire\MyBookingRequests;
 use App\Models\BookingRequest;
+use App\Models\PhotographerProfile;
 use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -119,8 +120,17 @@ it('redirects clients from dashboard to bookings index', function () {
         ->assertRedirect(route('bookings.index'));
 });
 
-it('redirects photographers from dashboard to filament panel', function () {
+it('redirects photographers from dashboard to onboarding when profile is missing', function () {
     $photographer = User::factory()->photographer()->create();
+
+    $this->actingAs($photographer)
+        ->get(route('dashboard'))
+        ->assertRedirect(route('photographer.onboarding'));
+});
+
+it('redirects photographers from dashboard to filament panel when profile exists', function () {
+    $photographer = User::factory()->photographer()->create();
+    PhotographerProfile::factory()->create(['user_id' => $photographer->id]);
 
     $this->actingAs($photographer)
         ->get(route('dashboard'))

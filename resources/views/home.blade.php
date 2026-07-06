@@ -22,7 +22,7 @@
                         <x-ui.button href="{{ route('photographers.index') }}" size="lg">
                             Mula Cari
                         </x-ui.button>
-                        <x-ui.button href="{{ route('register') }}" variant="outline" size="lg">
+                        <x-ui.button href="{{ route('register.photographer') }}" variant="outline" size="lg">
                             Saya Jurugambar
                         </x-ui.button>
                     </div>

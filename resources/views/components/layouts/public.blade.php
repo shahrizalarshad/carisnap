@@ -82,7 +82,7 @@
                             <a href="{{ route('login') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
                                 Log In
                             </a>
-                            <a href="{{ route('register') }}" wire:navigate class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 rounded-full text-sm font-medium transition-colors ml-2">
+                            <a href="{{ route('register.photographer') }}" wire:navigate class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 rounded-full text-sm font-medium transition-colors ml-2">
                                 Join as Pro
                             </a>
                         @endauth
@@ -124,7 +124,7 @@
                         <a href="{{ route('login') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
                             Log In
                         </a>
-                        <a href="{{ route('register') }}" wire:navigate @click="open = false" class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2.5 rounded-full text-sm font-medium transition-colors text-center mt-1">
+                        <a href="{{ route('register.photographer') }}" wire:navigate @click="open = false" class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2.5 rounded-full text-sm font-medium transition-colors text-center mt-1">
                             Join as Pro
                         </a>
                     @endauth
