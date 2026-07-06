@@ -84,7 +84,7 @@
             @if ($profile->featured_until && $profile->featured_until->isFuture())
                 <div class="absolute top-4 left-4 z-10">
                     <x-ui.badge color="brand" class="shadow-md bg-white/90 backdrop-blur text-brand-700 py-1 px-3">
-                        ✨ Featured
+                        ✨ Pilihan Utama
                     </x-ui.badge>
                 </div>
             @endif
@@ -166,13 +166,13 @@
 
     <!-- Availability -->
     <div class="space-y-4">
-        <h2 class="text-2xl font-heading font-semibold text-gray-900 border-l-4 border-brand-500 pl-3">Jadual Kekosongan (Next 3 Months)</h2>
+        <h2 class="text-2xl font-heading font-semibold text-gray-900 border-l-4 border-brand-500 pl-3">Jadual Kekosongan (3 Bulan Akan Datang)</h2>
         @if($profile->availabilities->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 @php
                     // Group availabilities by Year-Month
-                    $groupedAvailabilities = $profile->availabilities->groupBy(function($a) {
-                        return $a->date->format('F Y'); // e.g. July 2026
+                    $groupedAvailabilities = $profile->availabilities->groupBy(function ($a) {
+                        return $a->date->locale('ms')->translatedFormat('F Y');
                     });
                 @endphp
                 
@@ -182,7 +182,7 @@
                         <div class="flex flex-wrap gap-2">
                             @foreach($dates as $avail)
                                 <x-ui.badge color="green" class="text-sm px-3 py-1">
-                                    {{ $avail->date->format('j M') }}
+                                    {{ $avail->date->locale('ms')->translatedFormat('j M') }}
                                 </x-ui.badge>
                             @endforeach
                         </div>

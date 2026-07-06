@@ -2,7 +2,7 @@
     <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
-                <h2 class="text-2xl font-bold mb-6 text-center text-indigo-600">Semak Sebut Harga</h2>
+                <h2 class="text-2xl font-bold mb-6 text-center text-brand-600">Semak Sebut Harga</h2>
 
                 @if (session()->has('message'))
                     <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
@@ -34,10 +34,10 @@
 
                 <div class="mb-8">
                     <h3 class="text-lg font-semibold mb-4">Sebut Harga (Quote)</h3>
-                    <div class="bg-indigo-50 rounded-lg p-6 border border-indigo-100">
+                    <div class="bg-brand-50 rounded-lg p-6 border border-brand-100">
                         <div class="flex items-end justify-between mb-4">
                             <div>
-                                <span class="text-indigo-600 font-semibold block uppercase text-xs tracking-wider">Jumlah Sebut Harga</span>
+                                <span class="text-brand-600 font-semibold block uppercase text-xs tracking-wider">Jumlah Sebut Harga</span>
                                 <span class="text-3xl font-bold text-gray-900">RM {{ number_format($quote->amount) }}</span>
                             </div>
                             <div class="text-right">
@@ -49,7 +49,7 @@
                         </div>
 
                         @if($quote->message)
-                            <div class="mt-4 pt-4 border-t border-indigo-200">
+                            <div class="mt-4 pt-4 border-t border-brand-200">
                                 <span class="text-gray-500 block mb-1 text-sm">Mesej dari jurugambar:</span>
                                 <p class="text-gray-700 whitespace-pre-wrap italic">"{{ $quote->message }}"</p>
                             </div>
@@ -63,7 +63,7 @@
                             <button wire:click="decline" wire:confirm="Adakah anda pasti untuk MENOLAK sebut harga ini?" class="px-6 py-3 border border-red-500 text-red-500 font-medium rounded-md hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-center">
                                 Tolak Sebut Harga
                             </button>
-                            <button wire:click="accept" wire:confirm="Adakah anda pasti untuk MENERIMA sebut harga ini? Anda akan dihubungi oleh jurugambar selepas ini." class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center">
+                            <button wire:click="accept" wire:confirm="Adakah anda pasti untuk MENERIMA sebut harga ini? Anda akan dihubungi oleh jurugambar selepas ini." class="px-6 py-3 bg-brand-600 text-white font-medium rounded-md hover:bg-brand-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 text-center">
                                 Terima Sebut Harga
                             </button>
                         @else

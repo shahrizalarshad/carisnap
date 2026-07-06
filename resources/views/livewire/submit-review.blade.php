@@ -2,7 +2,7 @@
     <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
-                <h2 class="text-2xl font-bold mb-2 text-center text-indigo-600">Beri Ulasan Anda</h2>
+                <h2 class="text-2xl font-bold mb-2 text-center text-brand-600">Beri Ulasan Anda</h2>
                 <p class="text-center text-gray-500 mb-8">Bagaimanakah pengalaman anda berurusan dengan {{ $bookingRequest->profile->business_name }}?</p>
 
                 @if ($alreadySubmitted)
@@ -36,12 +36,12 @@
                         <!-- Comment -->
                         <div>
                             <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Komen & Maklum Balas (Pilihan)</label>
-                            <textarea wire:model="comment" id="comment" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Ceritakan pengalaman anda..."></textarea>
+                            <textarea wire:model="comment" id="comment" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm" placeholder="Ceritakan pengalaman anda..."></textarea>
                             @error('comment') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
-                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-colors">
                                 Hantar Ulasan
                             </button>
                         </div>

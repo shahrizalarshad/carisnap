@@ -18,7 +18,7 @@
     <!-- Desktop Filters (Hidden on Mobile) -->
     <div class="hidden sm:flex flex-wrap gap-4">
         <div class="flex-1 min-w-[200px]">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Kawasan (Location)</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Kawasan</label>
             <select wire:model.live="location" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
                 <option value="">Semua Kawasan</option>
                 <option value="Kuala Lumpur">Kuala Lumpur</option>
@@ -27,7 +27,7 @@
             </select>
         </div>
         <div class="flex-1 min-w-[200px]">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Bajet (Budget)</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Bajet</label>
             <select wire:model.live="budget" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
                 <option value="">Semua Bajet</option>
                 <option value="0-1000">Bawah RM1,000</option>
@@ -36,7 +36,7 @@
             </select>
         </div>
         <div class="flex-1 min-w-[200px]">
-            <label class="block text-xs font-medium text-gray-700 mb-1">Tarikh Majlis (Date)</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Tarikh Majlis</label>
             <input type="date" wire:model.live="date" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
         </div>
     </div>
@@ -67,19 +67,19 @@
                 <input type="date" wire:model.live="date" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
             </div>
             <div class="pt-4 border-t border-gray-100 flex justify-end gap-3" x-data>
-                <x-ui.button variant="ghost" wire:click="resetFilters" @click="$dispatch('close-sheet-filters')">Reset</x-ui.button>
+                <x-ui.button variant="ghost" wire:click="resetFilters" @click="$dispatch('close-sheet-filters')">Set Semula</x-ui.button>
                 <x-ui.button variant="primary" @click="$dispatch('close-sheet-filters')">Lihat Hasil</x-ui.button>
             </div>
         </div>
     </x-ui.bottom-sheet>
 
-    <!-- Loading State (Overlay or hidden) -->
-    <div class="hidden justify-center py-12 w-full absolute z-10">
+    <!-- Loading State -->
+    <div wire:loading.flex wire:target="location,budget,date" class="justify-center py-8 w-full">
         <svg class="animate-spin h-8 w-8 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
     </div>
 
     <!-- Results Grid -->
-    <div class="transition-opacity duration-200 mt-8">
+    <div class="transition-opacity duration-200 mt-8" wire:loading.class="opacity-50 pointer-events-none" wire:target="location,budget,date">
         @if ($profiles->count() > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($profiles as $profile)
@@ -109,7 +109,7 @@
                             @if ($profile->featured_until && $profile->featured_until->isFuture())
                                 <div class="absolute top-3 left-3">
                                     <x-ui.badge color="brand" class="shadow-sm bg-white/90 backdrop-blur text-brand-700">
-                                        ✨ Featured
+                                        ✨ Pilihan Utama
                                     </x-ui.badge>
                                 </div>
                             @endif

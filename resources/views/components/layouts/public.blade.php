@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="ms">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -96,10 +96,10 @@
                             @endif
                         @else
                             <a href="{{ route('login') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
-                                Log In
+                                Log Masuk
                             </a>
                             <a href="{{ route('register.photographer') }}" wire:navigate class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 rounded-full text-sm font-medium transition-colors ml-2">
-                                Join as Pro
+                                Daftar sebagai Pro
                             </a>
                         @endauth
                     </nav>
@@ -138,10 +138,10 @@
                         @endif
                     @else
                         <a href="{{ route('login') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                            Log In
+                            Log Masuk
                         </a>
                         <a href="{{ route('register.photographer') }}" wire:navigate @click="open = false" class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2.5 rounded-full text-sm font-medium transition-colors text-center mt-1">
-                            Join as Pro
+                            Daftar sebagai Pro
                         </a>
                     @endauth
                 </nav>
