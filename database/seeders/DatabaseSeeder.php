@@ -15,6 +15,7 @@ use App\Models\Review;
 use App\Models\User;
 use Database\Factories\MalayTestData;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
 
@@ -37,10 +38,27 @@ class DatabaseSeeder extends Seeder
             'name' => 'System Admin',
         ]);
 
-        // 25 verified photographer profiles
-        $profiles = PhotographerProfile::factory(25)->create([
+        // Demo photographer (fixed login for local dev)
+        $demoPhotographer = User::factory()->photographer()->create([
+            'email' => 'photographer@example.com',
+            'name' => 'Aiman Rahman',
+            'phone' => '0123456789',
+            'password' => Hash::make('password'),
+        ]);
+
+        $demoProfile = PhotographerProfile::factory()->create([
+            'user_id' => $demoPhotographer->id,
+            'business_name' => 'Studio Cahaya Permata',
+            'slug' => 'studio-cahaya-permata',
             'verified_at' => now(),
         ]);
+
+        // 24 more verified photographer profiles
+        $profiles = collect([$demoProfile])->merge(
+            PhotographerProfile::factory(24)->create([
+                'verified_at' => now(),
+            ])
+        );
 
         foreach ($profiles as $profile) {
             // Packages

@@ -34,19 +34,19 @@ class BookingStatsWidget extends BaseWidget
 
         return [
             Stat::make('Menunggu Respons', (string) $pending)
-                ->description('Permintaan baharu')
+                ->description($pending > 0 ? 'Permintaan baharu perlu dibalas' : 'Tiada permintaan baharu buat masa ini')
                 ->descriptionIcon('heroicon-m-inbox')
                 ->color($pending > 0 ? 'warning' : 'gray')
                 ->url('/photographer/booking-requests'),
             Stat::make('Sebut Harga Dihantar', (string) $quoted)
-                ->description('Menunggu pelanggan')
+                ->description($quoted > 0 ? 'Menunggu respons pelanggan' : 'Belum ada sebut harga aktif')
                 ->descriptionIcon('heroicon-m-currency-dollar')
-                ->color('info')
+                ->color($quoted > 0 ? 'info' : 'gray')
                 ->url('/photographer/booking-requests'),
             Stat::make('Tempahan Disahkan', (string) $accepted)
-                ->description('Diterima pelanggan')
+                ->description($accepted > 0 ? 'Deal disahkan pelanggan' : 'Belum ada tempahan disahkan')
                 ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success')
+                ->color($accepted > 0 ? 'success' : 'gray')
                 ->url('/photographer/booking-requests'),
         ];
     }

@@ -40,8 +40,11 @@ Open http://localhost
 
 After `migrate --seed`:
 
-| Role | Email |
-|------|-------|
-| Admin | admin@example.com |
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@example.com | `password` |
+| Photographer | photographer@example.com | `password` |
 
-Photographer profiles are seeded from the database seeder (25 verified studios).
+Photographer demo account: **Studio Cahaya Permata** → panel at `/photographer`, public profile at `/studio-cahaya-permata`.
+
+25 verified studio profiles are also seeded (other photographers use random emails).

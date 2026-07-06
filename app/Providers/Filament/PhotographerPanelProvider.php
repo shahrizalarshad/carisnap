@@ -25,9 +25,13 @@ class PhotographerPanelProvider extends PanelProvider
         return $panel
             ->id('photographer')
             ->path('photographer')
+            ->brandLogo(fn () => view('filament.photographer.logo'))
+            ->brandLogoHeight('2rem')
+            ->favicon(asset('favicon.svg'))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#d946ef'),
             ])
+            ->font('Inter')
             ->discoverResources(in: app_path('Filament/Photographer/Resources'), for: 'App\\Filament\\Photographer\\Resources')
             ->discoverPages(in: app_path('Filament/Photographer/Pages'), for: 'App\\Filament\\Photographer\\Pages')
             ->pages([
