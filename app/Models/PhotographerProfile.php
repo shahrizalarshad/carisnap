@@ -42,6 +42,11 @@ class PhotographerProfile extends Model
         $query->whereNotNull('verified_at');
     }
 
+    public function isFeatured(): bool
+    {
+        return $this->featured_until?->isFuture() ?? false;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

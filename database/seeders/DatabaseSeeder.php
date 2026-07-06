@@ -15,7 +15,6 @@ use App\Models\Review;
 use App\Models\User;
 use Database\Factories\MalayTestData;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
 
@@ -32,26 +31,11 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        // 1 admin
-        User::factory()->admin()->create([
-            'email' => 'admin@example.com',
-            'name' => 'System Admin',
-        ]);
+        $this->call(DemoAccountsSeeder::class);
 
-        // Demo photographer (fixed login for local dev)
-        $demoPhotographer = User::factory()->photographer()->create([
-            'email' => 'photographer@example.com',
-            'name' => 'Aiman Rahman',
-            'phone' => '0123456789',
-            'password' => Hash::make('password'),
-        ]);
-
-        $demoProfile = PhotographerProfile::factory()->create([
-            'user_id' => $demoPhotographer->id,
-            'business_name' => 'Studio Cahaya Permata',
-            'slug' => 'studio-cahaya-permata',
-            'verified_at' => now(),
-        ]);
+        $demoProfile = PhotographerProfile::query()
+            ->where('slug', 'studio-cahaya-permata')
+            ->firstOrFail();
 
         // 24 more verified photographer profiles
         $profiles = collect([$demoProfile])->merge(
@@ -110,42 +94,6 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        // Demo client (fixed login for local dev)
-        $demoClient = User::factory()->create([
-            'email' => 'client@example.com',
-            'name' => 'Siti Aisyah',
-            'phone' => '0198765432',
-            'password' => Hash::make('password'),
-        ]);
-
-        $demoPackage = $demoProfile->packages()->first();
-
-        BookingRequest::factory()->create([
-            'client_id' => $demoClient->id,
-            'profile_id' => $demoProfile->id,
-            'package_id' => $demoPackage->id,
-            'status' => BookingStatus::Pending,
-            'event_date' => now()->addMonths(4)->format('Y-m-d'),
-            'location' => 'Shah Alam, Selangor',
-            'message' => 'Majlis di dewan, anggaran 300 tetamu. Nak full-day coverage dengan album digital.',
-        ]);
-
-        $quotedBooking = BookingRequest::factory()->create([
-            'client_id' => $demoClient->id,
-            'profile_id' => $demoProfile->id,
-            'package_id' => $demoPackage->id,
-            'status' => BookingStatus::Quoted,
-            'event_date' => now()->addMonths(5)->format('Y-m-d'),
-            'location' => 'Klang, Selangor',
-            'responded_at' => now(),
-        ]);
-
-        Quote::factory()->create([
-            'booking_request_id' => $quotedBooking->id,
-            'status' => QuoteStatus::Sent,
-            'valid_until' => now()->addDays(7)->toDateString(),
-        ]);
 
         // 40 booking requests in mixed statuses
         $clients = collect();

@@ -40,6 +40,11 @@ Open http://localhost
 
 After `migrate --seed`:
 
+```bash
+# Upsert demo logins only (safe on existing DB)
+./vendor/bin/sail artisan db:seed --class=DemoAccountsSeeder
+```
+
 | Role | Email | Password |
 |------|-------|----------|
 | Admin | admin@example.com | `password` |

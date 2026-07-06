@@ -3,7 +3,10 @@
 namespace App\Filament\Resources\PhotographerProfileResource\Pages;
 
 use App\Actions\ApprovePhotographerProfile;
+use App\Actions\FeaturePhotographerProfile;
+use App\Actions\FeaturePhotographerProfileData;
 use App\Actions\RejectPhotographerProfile;
+use App\Actions\UnfeaturePhotographerProfile;
 use App\Filament\Resources\PhotographerProfileResource;
 use Filament\Actions;
 use Filament\Forms;
@@ -49,6 +52,28 @@ class ViewPhotographerProfile extends ViewRecord
                 ->requiresConfirmation()
                 ->visible(fn (): bool => ! is_null($this->record->verified_at))
                 ->action(fn (RejectPhotographerProfile $action) => $action->execute($this->record)),
+            Actions\Action::make('feature')
+                ->label('Tandakan Featured')
+                ->icon('heroicon-o-star')
+                ->color('warning')
+                ->form(PhotographerProfileResource::getFeatureFormSchema())
+                ->visible(fn (): bool => ! is_null($this->record->verified_at) && ! $this->record->isFeatured())
+                ->action(function (array $data): void {
+                    app(FeaturePhotographerProfile::class)->execute(
+                        $this->record,
+                        new FeaturePhotographerProfileData(durationDays: (int) $data['duration_days']),
+                    );
+                }),
+            Actions\Action::make('unfeature')
+                ->label('Buang Featured')
+                ->icon('heroicon-o-star')
+                ->color('gray')
+                ->requiresConfirmation()
+                ->modalDescription('Studio ini tidak lagi dipaparkan di bahagian utama laman web.')
+                ->visible(fn (): bool => $this->record->isFeatured())
+                ->action(function (): void {
+                    app(UnfeaturePhotographerProfile::class)->execute($this->record);
+                }),
         ];
     }
 }

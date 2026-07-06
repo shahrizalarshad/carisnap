@@ -3,9 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Actions\ApprovePhotographerProfile;
+use App\Actions\FeaturePhotographerProfile;
+use App\Actions\FeaturePhotographerProfileData;
 use App\Actions\RejectPhotographerProfile;
+use App\Actions\UnfeaturePhotographerProfile;
 use App\Filament\Resources\PhotographerProfileResource\Pages;
 use App\Models\PhotographerProfile;
+use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -81,6 +85,13 @@ class PhotographerProfileResource extends Resource
                     ->badge()
                     ->getStateUsing(fn (PhotographerProfile $record): string => $record->verified_at ? 'Disahkan' : 'Menunggu')
                     ->color(fn (PhotographerProfile $record): string => $record->verified_at ? 'success' : 'warning'),
+                Tables\Columns\TextColumn::make('featured_until')
+                    ->label('Featured')
+                    ->badge()
+                    ->formatStateUsing(fn ($state, PhotographerProfile $record): string => $record->isFeatured()
+                        ? 'Sehingga '.$record->featured_until->format('d/m/Y')
+                        : '—')
+                    ->color(fn (PhotographerProfile $record): string => $record->isFeatured() ? 'warning' : 'gray'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dihantar')
                     ->since()
@@ -94,11 +105,18 @@ class PhotographerProfileResource extends Resource
                 Tables\Filters\Filter::make('verified')
                     ->label('Disahkan')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('verified_at')),
+                Tables\Filters\Filter::make('featured')
+                    ->label('Featured Aktif')
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereNotNull('featured_until')
+                        ->where('featured_until', '>', now())),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 static::makeApproveTableAction(),
                 static::makeRejectTableAction(),
+                static::makeFeatureTableAction(),
+                static::makeUnfeatureTableAction(),
             ])
             ->bulkActions([]);
     }
@@ -151,6 +169,62 @@ class PhotographerProfileResource extends Resource
             ));
     }
 
+    protected static function makeFeatureTableAction(): TableAction
+    {
+        return static::configureFeatureAction(TableAction::make('feature'));
+    }
+
+    protected static function makeUnfeatureTableAction(): TableAction
+    {
+        return static::configureUnfeatureAction(TableAction::make('unfeature'));
+    }
+
+    protected static function configureFeatureAction(TableAction|Actions\Action $action): TableAction|Actions\Action
+    {
+        return $action
+            ->label('Tandakan Featured')
+            ->icon('heroicon-o-star')
+            ->color('warning')
+            ->form(static::getFeatureFormSchema())
+            ->visible(fn (PhotographerProfile $record): bool => ! is_null($record->verified_at) && ! $record->isFeatured())
+            ->action(function (PhotographerProfile $record, array $data): void {
+                app(FeaturePhotographerProfile::class)->execute(
+                    $record,
+                    new FeaturePhotographerProfileData(durationDays: (int) $data['duration_days']),
+                );
+            });
+    }
+
+    protected static function configureUnfeatureAction(TableAction|Actions\Action $action): TableAction|Actions\Action
+    {
+        return $action
+            ->label('Buang Featured')
+            ->icon('heroicon-o-star')
+            ->color('gray')
+            ->requiresConfirmation()
+            ->modalDescription('Studio ini tidak lagi dipaparkan di bahagian utama laman web.')
+            ->visible(fn (PhotographerProfile $record): bool => $record->isFeatured())
+            ->action(function (PhotographerProfile $record): void {
+                app(UnfeaturePhotographerProfile::class)->execute($record);
+            });
+    }
+
+    /** @return array<int, Forms\Components\Component> */
+    public static function getFeatureFormSchema(): array
+    {
+        return [
+            Forms\Components\Select::make('duration_days')
+                ->label('Tempoh Featured')
+                ->options([
+                    7 => '7 hari',
+                    30 => '30 hari',
+                    90 => '90 hari',
+                ])
+                ->default(30)
+                ->required(),
+        ];
+    }
+
     protected static function getInfolistSchema(): array
     {
         return [
@@ -165,6 +239,11 @@ class PhotographerProfileResource extends Resource
                         ->label('Disahkan Pada')
                         ->dateTime('d/m/Y H:i')
                         ->placeholder('—'),
+                    Infolists\Components\TextEntry::make('featured_until')
+                        ->label('Featured Sehingga')
+                        ->formatStateUsing(fn ($state, PhotographerProfile $record): string => $record->isFeatured()
+                            ? $record->featured_until->format('d/m/Y H:i')
+                            : '—'),
                     Infolists\Components\TextEntry::make('created_at')
                         ->label('Dihantar Pada')
                         ->dateTime('d/m/Y H:i'),
