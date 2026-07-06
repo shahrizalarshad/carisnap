@@ -166,11 +166,6 @@
                 <p class="text-center text-sm text-gray-500 font-medium">
                     &copy; {{ date('Y') }} CariSnap. Hak cipta terpelihara.
                 </p>
-                @if (app()->environment('local'))
-                    <p class="text-center mt-2">
-                        <a href="/styleguide" wire:navigate class="text-xs text-gray-400 hover:text-brand-600 transition-colors">Styleguide (dev)</a>
-                    </p>
-                @endif
             </div>
         </footer>
 
