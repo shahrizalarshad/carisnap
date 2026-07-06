@@ -111,6 +111,42 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Demo client (fixed login for local dev)
+        $demoClient = User::factory()->create([
+            'email' => 'client@example.com',
+            'name' => 'Siti Aisyah',
+            'phone' => '0198765432',
+            'password' => Hash::make('password'),
+        ]);
+
+        $demoPackage = $demoProfile->packages()->first();
+
+        BookingRequest::factory()->create([
+            'client_id' => $demoClient->id,
+            'profile_id' => $demoProfile->id,
+            'package_id' => $demoPackage->id,
+            'status' => BookingStatus::Pending,
+            'event_date' => now()->addMonths(4)->format('Y-m-d'),
+            'location' => 'Shah Alam, Selangor',
+            'message' => 'Majlis di dewan, anggaran 300 tetamu. Nak full-day coverage dengan album digital.',
+        ]);
+
+        $quotedBooking = BookingRequest::factory()->create([
+            'client_id' => $demoClient->id,
+            'profile_id' => $demoProfile->id,
+            'package_id' => $demoPackage->id,
+            'status' => BookingStatus::Quoted,
+            'event_date' => now()->addMonths(5)->format('Y-m-d'),
+            'location' => 'Klang, Selangor',
+            'responded_at' => now(),
+        ]);
+
+        Quote::factory()->create([
+            'booking_request_id' => $quotedBooking->id,
+            'status' => QuoteStatus::Sent,
+            'valid_until' => now()->addDays(7)->toDateString(),
+        ]);
+
         // 40 booking requests in mixed statuses
         $clients = collect();
         for ($i = 0; $i < 10; $i++) {

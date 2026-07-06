@@ -158,6 +158,11 @@
         <!-- Footer -->
         <footer class="bg-white border-t border-gray-100 mt-auto">
             <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+                <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-500 mb-4">
+                    <a href="{{ route('privacy') }}" wire:navigate class="hover:text-brand-600 transition-colors">Dasar Privasi</a>
+                    <a href="{{ route('terms') }}" wire:navigate class="hover:text-brand-600 transition-colors">Terma Penggunaan</a>
+                    <a href="mailto:hello@carisnap.my" class="hover:text-brand-600 transition-colors">hello@carisnap.my</a>
+                </nav>
                 <p class="text-center text-sm text-gray-500 font-medium">
                     &copy; {{ date('Y') }} CariSnap. Hak cipta terpelihara.
                 </p>

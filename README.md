@@ -44,7 +44,10 @@ After `migrate --seed`:
 |------|-------|----------|
 | Admin | admin@example.com | `password` |
 | Photographer | photographer@example.com | `password` |
+| Client | client@example.com | `password` |
 
 Photographer demo account: **Studio Cahaya Permata** → panel at `/photographer`, public profile at `/studio-cahaya-permata`.
+
+Client demo account: **Siti Aisyah** → tempahan at `/my-bookings` (2 sample requests to Studio Cahaya Permata).
 
 25 verified studio profiles are also seeded (other photographers use random emails).

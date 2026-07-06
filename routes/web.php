@@ -26,6 +26,9 @@ Route::get('/styleguide', function () {
     return view('styleguide');
 });
 
+Route::view('/dasar-privasi', 'pages.privacy')->name('privacy');
+Route::view('/terma-penggunaan', 'pages.terms')->name('terms');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-bookings', MyBookingRequests::class)->name('bookings.index');
     Route::get('/my-bookings/{bookingRequest}', ShowMyBookingRequest::class)->name('bookings.show');
