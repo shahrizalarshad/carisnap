@@ -96,6 +96,31 @@
                                     Tempahan Saya
                                 </a>
                             @endif
+
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button type="button" class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-600 hover:text-brand-600 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2">
+                                        <span class="max-w-[8rem] truncate">{{ auth()->user()->name }}</span>
+                                        <svg class="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </x-slot>
+
+                                <x-slot name="content">
+                                    <x-dropdown-link :href="route('profile.edit')">
+                                        Profil
+                                    </x-dropdown-link>
+
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <x-dropdown-link :href="route('logout')"
+                                            onclick="event.preventDefault(); this.closest('form').submit();">
+                                            Log Keluar
+                                        </x-dropdown-link>
+                                    </form>
+                                </x-slot>
+                            </x-dropdown>
                         @else
                             <a href="{{ route('login') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
                                 Log Masuk
@@ -138,6 +163,19 @@
                                 Tempahan Saya
                             </a>
                         @endif
+
+                        <div class="mt-2 pt-2 border-t border-gray-100">
+                            <p class="px-3 py-1 text-xs font-medium text-gray-500 truncate">{{ auth()->user()->name }}</p>
+                            <a href="{{ route('profile.edit') }}" wire:navigate @click="open = false" class="block text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                Profil
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                    Log Keluar
+                                </button>
+                            </form>
+                        </div>
                     @else
                         <a href="{{ route('login') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
                             Log Masuk

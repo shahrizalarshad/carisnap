@@ -46,3 +46,14 @@ it('shows admin nav for admins', function () {
         ->assertSee('Admin', false)
         ->assertDontSee('Tempahan Saya', false);
 });
+
+it('shows profile and logout options for authenticated users', function () {
+    $client = User::factory()->create(['role' => UserRole::Client]);
+
+    $this->actingAs($client)
+        ->get(route('bookings.index'))
+        ->assertOk()
+        ->assertSee('Log Keluar', false)
+        ->assertSee('Profil', false)
+        ->assertDontSee('Log Masuk', false);
+});
