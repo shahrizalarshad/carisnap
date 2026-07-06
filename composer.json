@@ -15,6 +15,7 @@
         "laravel/tinker": "^3.0",
         "league/flysystem-aws-s3-v3": "^3.35",
         "livewire/livewire": "^3.8",
+        "resend/resend-php": "^1.4",
         "spatie/laravel-medialibrary": "^11.23"
     },
     "require-dev": {
