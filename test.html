@@ -1,0 +1,739 @@
+<div wire:snapshot="{&quot;data&quot;:{&quot;location&quot;:&quot;&quot;,&quot;budget&quot;:&quot;&quot;,&quot;date&quot;:&quot;&quot;,&quot;paginators&quot;:[{&quot;page&quot;:1},{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;tlACF2hF4g1xZMlswb8e&quot;,&quot;name&quot;:&quot;browse-photographers&quot;,&quot;path&quot;:&quot;\/&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;release&quot;:&quot;a-a-a&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;en&quot;},&quot;checksum&quot;:&quot;3938e93eff6b9b548cd7d683f7a5ae9ac1536285faf3212e65e2ce723982064e&quot;}" wire:effects="{&quot;url&quot;:{&quot;location&quot;:{&quot;as&quot;:&quot;loc&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;budget&quot;:{&quot;as&quot;:&quot;b&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;date&quot;:{&quot;as&quot;:&quot;d&quot;,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;paginators.page&quot;:{&quot;as&quot;:&quot;page&quot;,&quot;use&quot;:&quot;push&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null}}}" wire:id="tlACF2hF4g1xZMlswb8e" class="space-y-6">
+    <!-- Header & Mobile Filter Trigger -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-gray-100 pb-4">
+        <div>
+            <h1 class="text-3xl font-heading font-bold text-gray-900">Cari Jurugambar</h1>
+            <p class="mt-2 text-sm text-gray-500">Temui jurugambar dan videografer terbaik untuk majlis anda.</p>
+        </div>
+        
+        <!-- Mobile Filter Button -->
+        <div class="sm:hidden" x-data>
+            <!--[if BLOCK]><![endif]-->    <button class="inline-flex items-center justify-center font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 px-4 py-2 text-base min-h-[44px] border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 w-full" @click="$dispatch('open-sheet-filters')">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                Tapis Carian
+    </button>
+<!--[if ENDBLOCK]><![endif]-->        </div>
+    </div>
+
+    <!-- Desktop Filters (Hidden on Mobile) -->
+    <div class="hidden sm:flex flex-wrap gap-4">
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Kawasan (Location)</label>
+            <select wire:model.live="location" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
+                <option value="">Semua Kawasan</option>
+                <option value="Kuala Lumpur">Kuala Lumpur</option>
+                <option value="Selangor">Selangor</option>
+                <option value="Putrajaya">Putrajaya</option>
+            </select>
+        </div>
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Bajet (Budget)</label>
+            <select wire:model.live="budget" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
+                <option value="">Semua Bajet</option>
+                <option value="0-1000">Bawah RM1,000</option>
+                <option value="1000-3000">RM1,000 - RM3,000</option>
+                <option value="3000-">RM3,000 Ke atas</option>
+            </select>
+        </div>
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-700 mb-1">Tarikh Majlis (Date)</label>
+            <input type="date" wire:model.live="date" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Sheet Filters -->
+    <div x-data="{ open: false }" 
+     @open-sheet-filters.window="open = true" 
+     @close-sheet-filters.window="open = false" 
+     @keydown.escape.window="open = false"
+     class="relative z-50" 
+     x-show="open" 
+     style="display: none;">
+     
+    <!-- Overlay -->
+    <div x-show="open" 
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm"
+         @click="open = false"></div>
+
+    <!-- Sheet Panel -->
+    <div class="fixed inset-0 flex flex-col justify-end sm:justify-center sm:items-center pointer-events-none">
+        <div x-show="open" 
+             x-transition:enter="transform transition ease-out duration-300"
+             x-transition:enter-start="translate-y-full sm:translate-y-4 sm:opacity-0 sm:scale-95"
+             x-transition:enter-end="translate-y-0 sm:translate-y-0 sm:opacity-100 sm:scale-100"
+             x-transition:leave="transform transition ease-in duration-200"
+             x-transition:leave-start="translate-y-0 sm:translate-y-0 sm:opacity-100 sm:scale-100"
+             x-transition:leave-end="translate-y-full sm:translate-y-4 sm:opacity-0 sm:scale-95"
+             class="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-2xl shadow-xl pointer-events-auto flex flex-col max-h-[90vh]">
+            
+            <!-- Mobile Drag Handle -->
+            <div class="sm:hidden flex justify-center pt-4 pb-2" @click="open = false">
+                <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
+            </div>
+            
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-lg font-heading font-semibold text-gray-900">Menu</h2>
+                <button @click="open = false" class="text-gray-400 hover:text-gray-500 focus:outline-none p-2 -mr-2">
+                    <span class="sr-only">Close</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="px-6 py-4 overflow-y-auto">
+                <div class="space-y-6">
+            <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-3">Kawasan</h4>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-brand-600 text-white shadow-sm" wire:click="$set('location', '')">
+    Semua
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('location', 'Kuala Lumpur')">
+    Kuala Lumpur
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('location', 'Selangor')">
+    Selangor
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('location', 'Putrajaya')">
+    Putrajaya
+</button
+                </div>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-3">Bajet</h4>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-brand-600 text-white shadow-sm" wire:click="$set('budget', '')">
+    Semua
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('budget', '0-1000')">
+    Bawah RM1K
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('budget', '1000-3000')">
+    RM1K - RM3K
+</button
+                    <button type="button" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer min-h-[44px] whitespace-nowrap bg-white text-gray-700 border border-gray-200 hover:bg-gray-50" wire:click="$set('budget', '3000-')">
+    RM3K+
+</button
+                </div>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-gray-900 mb-3">Tarikh Majlis</h4>
+                <input type="date" wire:model.live="date" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 text-sm">
+            </div>
+            <div class="pt-4 border-t border-gray-100 flex justify-end gap-3" x-data>
+                <!--[if BLOCK]><![endif]-->    <button class="inline-flex items-center justify-center font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 px-4 py-2 text-base min-h-[44px] bg-transparent text-gray-700 hover:bg-gray-100" wire:click="reset(['location', 'budget', 'date'])" @click="$dispatch('close-sheet-filters')">
+        Reset
+    </button>
+<!--[if ENDBLOCK]><![endif]-->                <!--[if BLOCK]><![endif]-->    <button class="inline-flex items-center justify-center font-medium rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 px-4 py-2 text-base min-h-[44px] bg-brand-600 text-white hover:bg-brand-700 shadow-sm" @click="$dispatch('close-sheet-filters')">
+        Lihat Hasil
+    </button>
+<!--[if ENDBLOCK]><![endif]-->            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Loading State (Overlay or hidden) -->
+    <div class="hidden justify-center py-12 w-full absolute z-10">
+        <svg class="animate-spin h-8 w-8 text-brand-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="transition-opacity duration-200 mt-8">
+        <!--[if BLOCK]><![endif]-->            <div class="text-4xl font-bold text-red-600 bg-yellow-200 p-4">TESTING VISIBILITY - COUNT: 12</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!--[if BLOCK]><![endif]-->                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/moore-plc-511" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/moore-plc-511" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Moore PLC
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Kilbackview
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,102
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/champlin-ward-7301" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/champlin-ward-7301" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Champlin-Ward
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Reichelshire
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,364
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/marvin-ltd-3182" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/marvin-ltd-3182" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Marvin Ltd
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Haagview
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,083
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/macejkovic-ltd-1739" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/macejkovic-ltd-1739" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Macejkovic Ltd
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                New Euna
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,038
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/hane-boyle-7791" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/hane-boyle-7791" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Hane-Boyle
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Hicklemouth
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="3.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(1)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,016
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/witting-inc-1918" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/witting-inc-1918" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Witting Inc
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                McKenzieborough
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,335
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/harber-gerhold-and-daugherty-9232" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/harber-gerhold-and-daugherty-9232" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Harber, Gerhold and Daugherty
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                North Macey
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,699
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/hand-cormier-9107" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/hand-cormier-9107" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Hand-Cormier
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Kertzmannfurt
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM1,229
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/hegmann-strosin-943" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/hegmann-strosin-943" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Hegmann-Strosin
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Port Jovanyton
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="4.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(1)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,911
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/nolan-lang-2500" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/nolan-lang-2500" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Nolan-Lang
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                North Erich
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="5.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(1)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,181
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/quigley-beer-and-mclaughlin-4710" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/quigley-beer-and-mclaughlin-4710" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Quigley, Beer and McLaughlin
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Kirlinhaven
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="0.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(0)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,314
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative">
+    <!-- Cover Image -->
+                        <a href="/rath-ortiz-and-langworth-8717" wire:navigate class="block relative h-56 overflow-hidden bg-gray-100">
+                                                        <!--[if BLOCK]><![endif]-->                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                            <!-- Featured Badge -->
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <div class="flex justify-between items-start mb-1">
+                                <a href="/rath-ortiz-and-langworth-8717" wire:navigate class="font-heading font-semibold text-lg text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1 flex items-center gap-1">
+                                    Rath, Ortiz and Langworth
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" title="Verified"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                </a>
+                            </div>
+                            
+                            <p class="text-sm text-gray-500 mb-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                West Maxie
+                            </p>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <div class="flex items-center" title="1.0 out of 5 stars">
+    <div class="flex text-yellow-400">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <!--[if ENDBLOCK]><![endif]-->        <!--[if ENDBLOCK]><![endif]-->    </div>
+    <!--[if BLOCK]><![endif]-->        <span class="ml-1 text-sm text-gray-500">(1)</span>
+    <!--[if ENDBLOCK]><![endif]--></div>
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <span class="text-sm font-semibold text-gray-900">
+                                        Dari RM2,332
+                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            </div>
+                        </div>
+</div>
+                <!--[if ENDBLOCK]><![endif]-->            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8">
+                <div>
+    <!--[if BLOCK]><![endif]-->        <nav role="navigation" aria-label="Pagination Navigation" class="flex items-center justify-between">
+            <div class="flex justify-between flex-1 sm:hidden">
+                <span>
+                    <!--[if BLOCK]><![endif]-->                        <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:focus:border-blue-700 dark:active:bg-gray-700 dark:active:text-gray-300">
+                            &laquo; Previous
+                        </span>
+                    <!--[if ENDBLOCK]><![endif]-->                </span>
+
+                <span>
+                    <!--[if BLOCK]><![endif]-->                        <button type="button" wire:click="nextPage('page')" x-on:click="   ($el.closest(&#039;body&#039;) || document.querySelector(&#039;body&#039;)).scrollIntoView()" wire:loading.attr="disabled" dusk="nextPage.before" class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:focus:border-blue-700 dark:active:bg-gray-700 dark:active:text-gray-300">
+                            Next &raquo;
+                        </button>
+                    <!--[if ENDBLOCK]><![endif]-->                </span>
+            </div>
+
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700 leading-5 dark:text-gray-400">
+                        <span>Showing</span>
+                        <span class="font-medium">1</span>
+                        <span>to</span>
+                        <span class="font-medium">12</span>
+                        <span>of</span>
+                        <span class="font-medium">25</span>
+                        <span>results</span>
+                    </p>
+                </div>
+
+                <div>
+                    <span class="relative z-0 inline-flex rtl:flex-row-reverse rounded-md shadow-sm">
+                        <span>
+                            
+                            <!--[if BLOCK]><![endif]-->                                <span aria-disabled="true" aria-label="&amp;laquo; Previous">
+                                    <span class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-l-md leading-5 dark:bg-gray-800 dark:border-gray-600" aria-hidden="true">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                </span>
+                            <!--[if ENDBLOCK]><![endif]-->                        </span>
+
+                        
+                        <!--[if BLOCK]><![endif]-->                            
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            
+                            <!--[if BLOCK]><![endif]-->                                <!--[if BLOCK]><![endif]-->                                    <span wire:key="paginator-page-page1">
+                                        <!--[if BLOCK]><![endif]-->                                            <span aria-current="page">
+                                                <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 dark:bg-gray-800 dark:border-gray-600">1</span>
+                                            </span>
+                                        <!--[if ENDBLOCK]><![endif]-->                                    </span>
+                                                                    <span wire:key="paginator-page-page2">
+                                        <!--[if BLOCK]><![endif]-->                                            <button type="button" wire:click="gotoPage(2, 'page')" x-on:click="   ($el.closest(&#039;body&#039;) || document.querySelector(&#039;body&#039;)).scrollIntoView()" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:ring ring-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:text-gray-300 dark:active:bg-gray-700 dark:focus:border-blue-800" aria-label="Go to page 2">
+                                                2
+                                            </button>
+                                        <!--[if ENDBLOCK]><![endif]-->                                    </span>
+                                                                    <span wire:key="paginator-page-page3">
+                                        <!--[if BLOCK]><![endif]-->                                            <button type="button" wire:click="gotoPage(3, 'page')" x-on:click="   ($el.closest(&#039;body&#039;) || document.querySelector(&#039;body&#039;)).scrollIntoView()" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:ring ring-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:text-gray-300 dark:active:bg-gray-700 dark:focus:border-blue-800" aria-label="Go to page 3">
+                                                3
+                                            </button>
+                                        <!--[if ENDBLOCK]><![endif]-->                                    </span>
+                                <!--[if ENDBLOCK]><![endif]-->                            <!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->
+                        <span>
+                            
+                            <!--[if BLOCK]><![endif]-->                                <button type="button" wire:click="nextPage('page')" x-on:click="   ($el.closest(&#039;body&#039;) || document.querySelector(&#039;body&#039;)).scrollIntoView()" dusk="nextPage.after" class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:ring ring-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:active:bg-gray-700 dark:focus:border-blue-800" aria-label="Next &amp;raquo;">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            <!--[if ENDBLOCK]><![endif]-->                        </span>
+                    </span>
+                </div>
+            </div>
+        </nav>
+    <!--[if ENDBLOCK]><![endif]--></div>
+
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->    </div>
+</div>
