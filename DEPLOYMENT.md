@@ -144,6 +144,21 @@ Start the queue worker (supervisor/systemd):
 php artisan horizon
 ```
 
+### Scheduler (cron)
+
+Daily commands expire stale quotes and request reviews. Add a cron entry on the server:
+
+```bash
+* * * * * cd /path/to/carisnap && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Scheduled tasks (see `routes/console.php`):
+
+| Command | Schedule |
+|---------|----------|
+| `quotes:expire` | Daily |
+| `reviews:request` | Daily at 10:00 |
+
 No `storage:link` needed when `MEDIA_DISK=s3` — media URLs come from R2.
 
 ---
@@ -154,10 +169,11 @@ No `storage:link` needed when `MEDIA_DISK=s3` — media URLs come from R2.
 - [ ] MySQL 8 with backups
 - [ ] Redis for session, cache, queue
 - [ ] Horizon running and monitored
+- [ ] Scheduler cron (`schedule:run` every minute)
 - [ ] R2 bucket + public CDN domain
 - [ ] Resend domain verified
 - [ ] Google OAuth redirect URIs match production URL
 - [ ] HTTPS enforced
-- [ ] Horizon dashboard restricted (admin auth / IP allowlist)
+- [ ] Horizon dashboard restricted to admin users (via `viewHorizon` gate)
 - [ ] Filament admin panel restricted to admin users
 - [ ] Run test suite: `php artisan test`

@@ -27,7 +27,7 @@ class BookingRequestResource extends Resource
 
     protected static ?string $navigationLabel = 'Permintaan Tempahan';
 
-    protected static ?string $modelLabel = 'Booking Request';
+    protected static ?string $modelLabel = 'Permintaan Tempahan';
 
     protected static ?int $navigationSort = 1;
 
@@ -46,7 +46,7 @@ class BookingRequestResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('client_display')
-                    ->label('Client')
+                    ->label('Pelanggan')
                     ->getStateUsing(fn (BookingRequest $record): string => static::clientName($record))
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->where(function (Builder $query) use ($search): void {
@@ -56,20 +56,23 @@ class BookingRequestResource extends Resource
                     })
                     ->description(fn (BookingRequest $record): ?string => static::clientContact($record)),
                 Tables\Columns\TextColumn::make('event_date')
-                    ->label('Event Date')
+                    ->label('Tarikh Majlis')
                     ->date('d/m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location')
+                    ->label('Lokasi')
                     ->searchable()
                     ->limit(30),
                 Tables\Columns\TextColumn::make('budget_from')
-                    ->label('Budget')
+                    ->label('Bajet')
                     ->formatStateUsing(fn ($state, BookingRequest $record): string => 'RM'.number_format($record->budget_from).' – RM'.number_format($record->budget_to)),
                 Tables\Columns\TextColumn::make('package.name')
-                    ->label('Package')
+                    ->label('Pakej')
                     ->placeholder('—')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(fn (BookingStatus $state): string => $state->label())
                     ->badge()
                     ->color(fn (BookingStatus $state): string => match ($state) {
                         BookingStatus::Pending => 'warning',
@@ -79,7 +82,7 @@ class BookingRequestResource extends Resource
                         BookingStatus::Expired => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Received')
+                    ->label('Diterima')
                     ->since()
                     ->sortable(),
             ])
@@ -89,7 +92,10 @@ class BookingRequestResource extends Resource
             ->emptyStateIcon('heroicon-o-inbox')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(BookingStatus::class),
+                    ->label('Status')
+                    ->options(collect(BookingStatus::cases())->mapWithKeys(
+                        fn (BookingStatus $status) => [$status->value => $status->label()]
+                    )),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -147,18 +153,18 @@ class BookingRequestResource extends Resource
     protected static function configureSendQuoteAction(PageAction|TableAction $action): PageAction|TableAction
     {
         return $action
-            ->label('Send Quote')
+            ->label('Hantar Sebut Harga')
             ->icon('heroicon-o-currency-dollar')
             ->color('success')
             ->form([
                 Forms\Components\TextInput::make('amount')
-                    ->label('Quote Amount (RM)')
+                    ->label('Jumlah (RM)')
                     ->numeric()
                     ->required()
                     ->minValue(1)
                     ->prefix('RM'),
                 Forms\Components\Textarea::make('message')
-                    ->label('Message to Client')
+                    ->label('Mesej kepada Pelanggan')
                     ->nullable()
                     ->rows(3),
             ])
@@ -169,73 +175,75 @@ class BookingRequestResource extends Resource
                 ));
             })
             ->visible(fn (BookingRequest $record): bool => $record->status === BookingStatus::Pending)
-            ->successNotificationTitle('Quote sent');
+            ->successNotificationTitle('Sebut harga dihantar');
     }
 
     protected static function configureDeclineAction(PageAction|TableAction $action): PageAction|TableAction
     {
         return $action
-            ->label('Decline')
+            ->label('Tolak')
             ->icon('heroicon-o-x-circle')
             ->color('danger')
             ->requiresConfirmation()
-            ->modalDescription('The client will be notified that you declined this booking request.')
+            ->modalDescription('Pelanggan akan dimaklumkan bahawa anda menolak permintaan tempahan ini.')
             ->action(function (BookingRequest $record): void {
                 app(DeclineBookingRequest::class)->execute($record);
             })
             ->visible(fn (BookingRequest $record): bool => $record->status === BookingStatus::Pending)
-            ->successNotificationTitle('Booking declined');
+            ->successNotificationTitle('Permintaan ditolak');
     }
 
     protected static function getFormSchema(): array
     {
         return [
-            Forms\Components\Section::make('Client')
+            Forms\Components\Section::make('Pelanggan')
                 ->schema([
                     Forms\Components\Placeholder::make('client_name')
-                        ->label('Name')
+                        ->label('Nama')
                         ->content(fn (?BookingRequest $record): string => $record ? static::clientName($record) : '—'),
                     Forms\Components\Placeholder::make('client_phone')
-                        ->label('Phone')
+                        ->label('Telefon')
                         ->content(fn (?BookingRequest $record): string => $record ? (static::clientPhone($record) ?? '—') : '—'),
                     Forms\Components\Placeholder::make('client_email')
-                        ->label('Email')
+                        ->label('E-mel')
                         ->content(fn (?BookingRequest $record): string => $record ? (static::clientEmail($record) ?? '—') : '—'),
                 ])->columns(3),
-            Forms\Components\Section::make('Event Details')
+            Forms\Components\Section::make('Butiran Majlis')
                 ->schema([
                     Forms\Components\Placeholder::make('event_type')
-                        ->label('Event Type')
+                        ->label('Jenis Acara')
                         ->content(fn (?BookingRequest $record): string => $record?->event_type?->value ?? '—'),
                     Forms\Components\Placeholder::make('event_date')
-                        ->label('Event Date')
+                        ->label('Tarikh Majlis')
                         ->content(fn (?BookingRequest $record): string => $record?->event_date?->format('d/m/Y') ?? '—'),
                     Forms\Components\Placeholder::make('location')
+                        ->label('Lokasi')
                         ->content(fn (?BookingRequest $record): string => $record?->location ?? '—'),
                     Forms\Components\Placeholder::make('package')
-                        ->label('Package')
+                        ->label('Pakej')
                         ->content(fn (?BookingRequest $record): string => $record?->package?->name ?? '—'),
                 ])->columns(2),
-            Forms\Components\Section::make('Budget & Message')
+            Forms\Components\Section::make('Bajet & Mesej')
                 ->schema([
                     Forms\Components\Placeholder::make('budget')
-                        ->label('Budget Range')
+                        ->label('Julat Bajet')
                         ->content(fn (?BookingRequest $record): string => $record
                             ? 'RM'.number_format($record->budget_from).' – RM'.number_format($record->budget_to)
                             : '—'),
                     Forms\Components\Placeholder::make('message')
+                        ->label('Mesej')
                         ->content(fn (?BookingRequest $record): string => $record?->message ?? '—')
                         ->columnSpanFull(),
                 ]),
             Forms\Components\Section::make('Status')
                 ->schema([
                     Forms\Components\Placeholder::make('status')
-                        ->content(fn (?BookingRequest $record): string => ucfirst($record?->status?->value ?? '—')),
+                        ->content(fn (?BookingRequest $record): string => $record?->status?->label() ?? '—'),
                     Forms\Components\Placeholder::make('responded_at')
-                        ->label('Responded At')
+                        ->label('Dijawab Pada')
                         ->content(fn (?BookingRequest $record): string => $record?->responded_at?->format('d/m/Y H:i') ?? '—'),
                     Forms\Components\Placeholder::make('created_at')
-                        ->label('Received At')
+                        ->label('Diterima Pada')
                         ->content(fn (?BookingRequest $record): string => $record?->created_at?->format('d/m/Y H:i') ?? '—'),
                 ])->columns(3),
         ];
@@ -244,41 +252,47 @@ class BookingRequestResource extends Resource
     protected static function getInfolistSchema(): array
     {
         return [
-            Infolists\Components\Section::make('Client')
+            Infolists\Components\Section::make('Pelanggan')
                 ->schema([
                     Infolists\Components\TextEntry::make('client_display')
-                        ->label('Name')
+                        ->label('Nama')
                         ->getStateUsing(fn (BookingRequest $record): string => static::clientName($record)),
                     Infolists\Components\TextEntry::make('client_phone')
-                        ->label('Phone')
+                        ->label('Telefon')
                         ->getStateUsing(fn (BookingRequest $record): string => static::clientPhone($record) ?? '—'),
                     Infolists\Components\TextEntry::make('client_email')
-                        ->label('Email')
+                        ->label('E-mel')
                         ->getStateUsing(fn (BookingRequest $record): string => static::clientEmail($record) ?? '—'),
                 ])->columns(3),
-            Infolists\Components\Section::make('Event Details')
+            Infolists\Components\Section::make('Butiran Majlis')
                 ->schema([
                     Infolists\Components\TextEntry::make('event_type')
+                        ->label('Jenis Acara')
                         ->badge(),
                     Infolists\Components\TextEntry::make('event_date')
+                        ->label('Tarikh Majlis')
                         ->date('d/m/Y'),
-                    Infolists\Components\TextEntry::make('location'),
+                    Infolists\Components\TextEntry::make('location')
+                        ->label('Lokasi'),
                     Infolists\Components\TextEntry::make('package.name')
-                        ->label('Package')
+                        ->label('Pakej')
                         ->placeholder('—'),
                 ])->columns(2),
-            Infolists\Components\Section::make('Budget & Message')
+            Infolists\Components\Section::make('Bajet & Mesej')
                 ->schema([
                     Infolists\Components\TextEntry::make('budget_range')
-                        ->label('Budget')
+                        ->label('Bajet')
                         ->getStateUsing(fn (BookingRequest $record): string => 'RM'.number_format($record->budget_from).' – RM'.number_format($record->budget_to)),
                     Infolists\Components\TextEntry::make('message')
-                        ->placeholder('No message')
+                        ->label('Mesej')
+                        ->placeholder('Tiada mesej')
                         ->columnSpanFull(),
                 ]),
             Infolists\Components\Section::make('Status')
                 ->schema([
                     Infolists\Components\TextEntry::make('status')
+                        ->label('Status')
+                        ->formatStateUsing(fn (BookingStatus $state): string => $state->label())
                         ->badge()
                         ->color(fn (BookingStatus $state): string => match ($state) {
                             BookingStatus::Pending => 'warning',
@@ -288,10 +302,11 @@ class BookingRequestResource extends Resource
                             BookingStatus::Expired => 'gray',
                         }),
                     Infolists\Components\TextEntry::make('responded_at')
+                        ->label('Dijawab Pada')
                         ->dateTime()
                         ->placeholder('—'),
                     Infolists\Components\TextEntry::make('created_at')
-                        ->label('Received')
+                        ->label('Diterima')
                         ->dateTime(),
                 ])->columns(3),
         ];
@@ -300,8 +315,8 @@ class BookingRequestResource extends Resource
     protected static function clientName(BookingRequest $record): string
     {
         return $record->client_id
-            ? ($record->client?->name ?? 'Registered Client')
-            : ($record->guest_name ?? 'Guest');
+            ? ($record->client?->name ?? 'Pelanggan Berdaftar')
+            : ($record->guest_name ?? 'Tetamu');
     }
 
     protected static function clientPhone(BookingRequest $record): ?string

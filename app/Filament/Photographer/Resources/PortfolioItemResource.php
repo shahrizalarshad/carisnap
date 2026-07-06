@@ -22,7 +22,9 @@ class PortfolioItemResource extends Resource
 
     protected static ?string $navigationLabel = 'Portfolio';
 
-    protected static ?string $modelLabel = 'Portfolio Item';
+    protected static ?string $modelLabel = 'Item Portfolio';
+
+    protected static ?string $pluralModelLabel = 'Portfolio';
 
     protected static ?int $navigationSort = 3;
 
@@ -33,7 +35,7 @@ class PortfolioItemResource extends Resource
                 Forms\Components\Hidden::make('profile_id')
                     ->default(fn () => auth()->user()->profile?->id),
                 SpatieMediaLibraryFileUpload::make('portfolio')
-                    ->label('Photo')
+                    ->label('Foto')
                     ->collection('portfolio')
                     ->image()
                     ->imageEditor()
@@ -41,19 +43,19 @@ class PortfolioItemResource extends Resource
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\Select::make('event_type')
-                    ->label('Event Type')
-                    ->options(EventType::class)
+                    ->label('Jenis Acara')
+                    ->options([EventType::Wedding->value => 'Perkahwinan'])
                     ->default(EventType::Wedding)
                     ->required()
                     ->disabled()
                     ->dehydrated(),
                 Forms\Components\Textarea::make('caption')
-                    ->label('Caption')
+                    ->label('Kapsyen')
                     ->rows(2)
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
-                    ->label('Sort Order')
+                    ->label('Susunan')
                     ->numeric()
                     ->minValue(0)
                     ->default(function (): int {
@@ -72,23 +74,25 @@ class PortfolioItemResource extends Resource
         return $table
             ->columns([
                 SpatieMediaLibraryImageColumn::make('portfolio')
-                    ->label('Photo')
+                    ->label('Foto')
                     ->collection('portfolio')
                     ->conversion('thumbnail')
                     ->square()
                     ->size(60),
                 Tables\Columns\TextColumn::make('caption')
-                    ->label('Caption')
+                    ->label('Kapsyen')
                     ->searchable()
                     ->limit(40)
                     ->placeholder('—'),
                 Tables\Columns\TextColumn::make('event_type')
+                    ->label('Jenis Acara')
+                    ->formatStateUsing(fn (EventType $state): string => 'Perkahwinan')
                     ->badge(),
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->label('Order')
+                    ->label('Susunan')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Uploaded')
+                    ->label('Dimuat Naik')
                     ->since()
                     ->sortable(),
             ])
