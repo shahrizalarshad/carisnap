@@ -13,7 +13,7 @@ class ReviewFactory extends Factory
         return [
             'booking_request_id' => BookingRequest::factory()->state(['status' => BookingStatus::Accepted]),
             'rating' => fake()->numberBetween(1, 5),
-            'comment' => fake()->paragraph(),
+            'comment' => MalayTestData::reviewComment(),
             'published_at' => now(),
         ];
     }

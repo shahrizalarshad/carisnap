@@ -13,7 +13,7 @@ class QuoteFactory extends Factory
         return [
             'booking_request_id' => BookingRequest::factory(),
             'amount' => fake()->numberBetween(1500, 5000),
-            'message' => fake()->paragraph(),
+            'message' => MalayTestData::quoteMessage(),
             'valid_until' => fake()->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
             'status' => QuoteStatus::Sent,
         ];

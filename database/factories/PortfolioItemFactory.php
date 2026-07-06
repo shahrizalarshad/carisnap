@@ -13,7 +13,7 @@ class PortfolioItemFactory extends Factory
         return [
             'profile_id' => PhotographerProfile::factory(),
             'event_type' => EventType::Wedding,
-            'caption' => fake()->sentence(),
+            'caption' => MalayTestData::portfolioCaption(),
             'sort_order' => fake()->numberBetween(0, 100),
         ];
     }

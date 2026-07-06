@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\AvailabilityStatus;
 use App\Enums\BookingStatus;
 use App\Enums\QuoteStatus;
 use App\Models\Availability;
@@ -12,6 +13,7 @@ use App\Models\PortfolioItem;
 use App\Models\Quote;
 use App\Models\Review;
 use App\Models\User;
+use Database\Factories\MalayTestData;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -70,12 +72,18 @@ class DatabaseSeeder extends Seeder
                 Availability::factory()->create([
                     'profile_id' => $profile->id,
                     'date' => $date,
+                    'status' => AvailabilityStatus::Available,
                 ]);
             }
         }
 
         // 40 booking requests in mixed statuses
-        $clients = User::factory(10)->create();
+        $clients = collect();
+        for ($i = 0; $i < 10; $i++) {
+            $clients->push(User::factory()->create([
+                'name' => MalayTestData::personName(),
+            ]));
+        }
 
         for ($i = 0; $i < 40; $i++) {
             $profile = $profiles->random();

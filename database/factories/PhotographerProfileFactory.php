@@ -11,17 +11,19 @@ class PhotographerProfileFactory extends Factory
 {
     public function definition(): array
     {
-        $name = fake()->company();
+        $name = MalayTestData::studioName();
 
         return [
-            'user_id' => User::factory()->photographer(),
-            'slug' => Str::slug($name.'-'.fake()->randomNumber(4)),
+            'user_id' => User::factory()->photographer()->create([
+                'name' => MalayTestData::personName(),
+            ]),
+            'slug' => Str::slug($name.'-'.fake()->unique()->numberBetween(1000, 9999)),
             'business_name' => $name,
-            'bio' => fake()->paragraphs(2, true),
-            'location_area' => fake()->city(),
-            'coverage_areas' => [fake()->city(), fake()->city()],
-            'instagram_handle' => '@'.fake()->word(),
-            'whatsapp_number' => fake()->phoneNumber(),
+            'bio' => MalayTestData::bio(),
+            'location_area' => MalayTestData::locationArea(),
+            'coverage_areas' => MalayTestData::coverageAreas(),
+            'instagram_handle' => MalayTestData::instagramHandle(),
+            'whatsapp_number' => MalayTestData::whatsappNumber(),
             'tier' => ProfileTier::Free,
             'verified_at' => now(),
             'featured_until' => null,

@@ -12,10 +12,10 @@ class PackageFactory extends Factory
     {
         return [
             'profile_id' => PhotographerProfile::factory(),
-            'name' => fake()->words(3, true).' Package',
+            'name' => MalayTestData::packageName(),
             'event_type' => EventType::Wedding,
             'price_from' => fake()->numberBetween(1000, 5000),
-            'deliverables' => fake()->paragraph(),
+            'deliverables' => MalayTestData::deliverables(),
             'duration_hours' => fake()->numberBetween(4, 12),
             'is_active' => true,
         ];

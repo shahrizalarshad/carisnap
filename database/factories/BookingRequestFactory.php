@@ -15,7 +15,9 @@ class BookingRequestFactory extends Factory
         $budgetFrom = fake()->numberBetween(1000, 3000);
 
         return [
-            'client_id' => User::factory(),
+            'client_id' => User::factory()->create([
+                'name' => MalayTestData::personName(),
+            ]),
             'guest_name' => null,
             'guest_phone' => null,
             'guest_email' => null,
@@ -23,10 +25,10 @@ class BookingRequestFactory extends Factory
             'package_id' => null,
             'event_type' => EventType::Wedding,
             'event_date' => fake()->dateTimeBetween('+1 month', '+1 year')->format('Y-m-d'),
-            'location' => fake()->city(),
+            'location' => MalayTestData::bookingLocation(),
             'budget_from' => $budgetFrom,
             'budget_to' => $budgetFrom + 2000,
-            'message' => fake()->paragraph(),
+            'message' => MalayTestData::bookingMessage(),
             'status' => fake()->randomElement(BookingStatus::cases()),
             'responded_at' => null,
         ];
@@ -36,9 +38,9 @@ class BookingRequestFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'client_id' => null,
-            'guest_name' => fake()->name(),
-            'guest_phone' => fake()->phoneNumber(),
-            'guest_email' => fake()->safeEmail(),
+            'guest_name' => MalayTestData::personName(),
+            'guest_phone' => MalayTestData::whatsappNumber(),
+            'guest_email' => fake()->unique()->safeEmail(),
         ]);
     }
 }
