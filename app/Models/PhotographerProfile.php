@@ -107,6 +107,7 @@ class PhotographerProfile extends Model
     public function coverPortfolioItem()
     {
         return $this->hasOne(PortfolioItem::class, 'profile_id')
+            ->whereHas('media', fn ($query) => $query->where('collection_name', 'portfolio'))
             ->orderBy('sort_order');
     }
 }

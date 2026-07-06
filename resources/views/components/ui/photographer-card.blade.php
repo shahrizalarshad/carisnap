@@ -7,8 +7,8 @@
         @endphp
         @if ($coverMedia)
             <img
-                src="{{ $coverMedia->getUrl('display') }}"
-                srcset="{{ $coverMedia->getUrl('thumbnail') }} 400w, {{ $coverMedia->getUrl('display') }} 1200w"
+                src="{{ \App\Models\PortfolioItem::mediaUrl($coverMedia) }}"
+                @if ($srcset = \App\Models\PortfolioItem::mediaSrcset($coverMedia)) srcset="{{ $srcset }}" @endif
                 sizes="(max-width: 640px) 100vw, 33vw"
                 alt="{{ $profile->business_name }}"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

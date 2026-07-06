@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Enums\AvailabilityStatus;
 use App\Models\PhotographerProfile;
+use App\Models\PortfolioItem;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -37,7 +38,8 @@ class ShowPhotographerProfile extends Component
             ? Str::limit($this->profile->bio, 155)
             : "Jurugambar perkahwinan di {$this->profile->location_area}. Lihat portfolio, pakej, dan tarikh kekosongan di CariSnap.";
 
-        $ogImage = $this->profile->portfolioItems->first()?->getFirstMediaUrl('portfolio', 'display')
+        $ogMedia = $this->profile->portfolioItems->first()?->getFirstMedia('portfolio');
+        $ogImage = PortfolioItem::mediaUrl($ogMedia)
             ?: asset('images/og-default.svg');
 
         return view('livewire.show-photographer-profile')

@@ -50,7 +50,7 @@
                                 'h-36' => $index > 0,
                             ])>
                                 <img
-                                    src="{{ $media->getUrl('display') }}"
+                                    src="{{ \App\Models\PortfolioItem::mediaUrl($media) }}"
                                     alt="Portfolio jurugambar perkahwinan"
                                     class="w-full h-full object-cover"
                                     loading="lazy"

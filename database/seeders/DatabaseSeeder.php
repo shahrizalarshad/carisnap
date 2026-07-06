@@ -15,9 +15,20 @@ use App\Models\Review;
 use App\Models\User;
 use Database\Factories\MalayTestData;
 use Illuminate\Database\Seeder;
+use Spatie\MediaLibrary\Conversions\ConversionCollection;
+use Spatie\MediaLibrary\Conversions\FileManipulator;
 
 class DatabaseSeeder extends Seeder
 {
+    /** @return list<string> */
+    private function sampleImagePaths(): array
+    {
+        return collect(glob(database_path('seeders/sample-images/wedding-*.jpg')))
+            ->filter(fn (string $path) => is_file($path))
+            ->values()
+            ->all();
+    }
+
     public function run(): void
     {
         // 1 admin
@@ -42,22 +53,27 @@ class DatabaseSeeder extends Seeder
                 'profile_id' => $profile->id,
             ]);
 
-            $sampleImages = [
-                storage_path('app/wedding1.jpg'),
-                storage_path('app/wedding2.jpg'),
-                storage_path('app/wedding3.jpg'),
-            ];
+            $sampleImages = $this->sampleImagePaths();
 
             foreach ($portfolioItems as $item) {
+                if ($sampleImages === []) {
+                    break;
+                }
+
                 $image = $sampleImages[array_rand($sampleImages)];
-                if (file_exists($image)) {
-                    try {
-                        $item->addMedia($image)
-                            ->preservingOriginal()
-                            ->toMediaCollection('portfolio');
-                    } catch (\Exception $e) {
-                        // ignore if media upload fails in seeder
+                try {
+                    $item->addMedia($image)
+                        ->preservingOriginal()
+                        ->toMediaCollection('portfolio');
+
+                    $media = $item->fresh()->getFirstMedia('portfolio');
+
+                    if ($media) {
+                        $conversions = ConversionCollection::createForMedia($media);
+                        app(FileManipulator::class)->performConversions($conversions, $media);
                     }
+                } catch (\Exception $e) {
+                    // ignore if media upload fails in seeder
                 }
             }
 

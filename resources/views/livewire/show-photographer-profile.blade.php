@@ -66,8 +66,8 @@
                         @if($media)
                             <div class="swiper-slide h-full bg-gray-200">
                                 <img
-                                    src="{{ $media->getUrl('display') }}"
-                                    srcset="{{ $media->getUrl('thumbnail') }} 400w, {{ $media->getUrl('display') }} 1200w"
+                                    src="{{ \App\Models\PortfolioItem::mediaUrl($media) }}"
+                                    @if ($srcset = \App\Models\PortfolioItem::mediaSrcset($media)) srcset="{{ $srcset }}" @endif
                                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                     alt="{{ $item->caption ?? $profile->business_name }}"
                                     class="w-full h-full object-cover"

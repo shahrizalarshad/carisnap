@@ -34,6 +34,21 @@ it('queues webp thumbnail and display conversions for portfolio uploads', functi
     Queue::assertPushed(PerformConversionsJob::class);
 });
 
+it('falls back to the original image url when conversions are not ready', function () {
+    Queue::fake();
+
+    $item = PortfolioItem::factory()->create();
+
+    $item->addMedia(UploadedFile::fake()->image('wedding.jpg', 1600, 1200))
+        ->toMediaCollection('portfolio');
+
+    $media = $item->fresh()->getFirstMedia('portfolio');
+
+    expect($media->hasGeneratedConversion('display'))->toBeFalse()
+        ->and(PortfolioItem::mediaUrl($media))->toBe($media->getUrl())
+        ->and(PortfolioItem::mediaSrcset($media))->toBeNull();
+});
+
 it('generates thumbnail and display webp conversions when conversion jobs run', function () {
     Queue::fake();
 

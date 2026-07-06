@@ -53,4 +53,36 @@ class PortfolioItem extends Model implements HasMedia
     {
         return $this->belongsTo(PhotographerProfile::class, 'profile_id');
     }
+
+    public static function mediaUrl(?Media $media, string $conversion = 'display'): ?string
+    {
+        if (! $media) {
+            return null;
+        }
+
+        if ($media->hasGeneratedConversion($conversion)) {
+            return $media->getUrl($conversion);
+        }
+
+        return $media->getUrl();
+    }
+
+    public static function mediaSrcset(?Media $media): ?string
+    {
+        if (! $media) {
+            return null;
+        }
+
+        $parts = [];
+
+        if ($media->hasGeneratedConversion('thumbnail')) {
+            $parts[] = $media->getUrl('thumbnail').' 400w';
+        }
+
+        if ($media->hasGeneratedConversion('display')) {
+            $parts[] = $media->getUrl('display').' 1200w';
+        }
+
+        return $parts !== [] ? implode(', ', $parts) : null;
+    }
 }
