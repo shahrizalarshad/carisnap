@@ -6,18 +6,33 @@
         @php
             $pageTitle = $title ?? config('app.name', 'CariSnap');
             $desc = $metaDescription ?? 'Cari dan tempah jurugambar atau juruvideo perkahwinan terbaik di Malaysia. Tapis ikut lokasi, bajet, dan tarikh kekosongan.';
-            $image = $ogImage ?? asset('images/og-default.jpg'); // Fallback if no specific OG image
+            $image = $ogImage ?? asset('images/og-default.svg');
+            $noIndex = $noIndex ?? false;
+            $canonical = $canonical ?? url()->current();
+            $ogType = $ogType ?? 'website';
         @endphp
         
         <title>{{ $pageTitle }}</title>
         <meta name="description" content="{{ $desc }}">
+        @if ($noIndex)
+            <meta name="robots" content="noindex, nofollow">
+        @endif
+        <link rel="canonical" href="{{ $canonical }}">
         
         <!-- OpenGraph Meta Tags -->
+        <meta property="og:site_name" content="CariSnap">
+        <meta property="og:locale" content="ms_MY">
         <meta property="og:title" content="{{ $pageTitle }}">
         <meta property="og:description" content="{{ $desc }}">
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="{{ request()->url() }}">
+        <meta property="og:type" content="{{ $ogType }}">
+        <meta property="og:url" content="{{ $canonical }}">
         <meta property="og:image" content="{{ $image }}">
+        
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $pageTitle }}">
+        <meta name="twitter:description" content="{{ $desc }}">
+        <meta name="twitter:image" content="{{ $image }}">
         
         @stack('meta')
         

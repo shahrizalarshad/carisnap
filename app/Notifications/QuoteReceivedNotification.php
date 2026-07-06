@@ -4,11 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Quote;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\URL;
 
-class QuoteReceivedNotification extends Notification
+class QuoteReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -38,10 +39,11 @@ class QuoteReceivedNotification extends Notification
         return (new MailMessage)
             ->subject('Sebut Harga Baharu dari CariSnap')
             ->greeting('Hai!')
-            ->line('Anda telah menerima sebut harga baharu daripada '.$this->quote->bookingRequest->profile->business_name.'.')
-            ->line('Sila klik butang di bawah untuk menyemak dan memberi maklum balas.')
-            ->action('Semak Sebut Harga', URL::signedRoute('quotes.show', ['quote' => $this->quote->id]))
-            ->line('Sebut harga ini sah sehingga '.$this->quote->valid_until->format('d/m/Y').'.');
+            ->line($this->quote->bookingRequest->profile->business_name.' telah hantar sebut harga untuk permintaan tempahan anda.')
+            ->line('Jumlah: **RM'.number_format($this->quote->amount).'**')
+            ->line('Sah sehingga: '.$this->quote->valid_until->format('d/m/Y'))
+            ->action('Semak & Balas Sebut Harga', URL::signedRoute('quotes.show', ['quote' => $this->quote->id]))
+            ->line('Sila balas sebelum tarikh tamat tempoh.');
     }
 
     /**

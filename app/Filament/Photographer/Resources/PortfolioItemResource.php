@@ -94,6 +94,9 @@ class PortfolioItemResource extends Resource
             ])
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
+            ->emptyStateHeading('Portfolio masih kosong')
+            ->emptyStateDescription('Muat naik foto majlis perkahwinan terbaik anda untuk menarik lebih ramai pelanggan.')
+            ->emptyStateIcon('heroicon-o-photo')
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),

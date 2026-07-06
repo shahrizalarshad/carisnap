@@ -15,7 +15,11 @@ class PackageResource extends Resource
 {
     protected static ?string $model = Package::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+    protected static ?string $navigationLabel = 'Pakej';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -47,33 +51,28 @@ class PackageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('profile_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('event_type')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('price_from')
-                    ->numeric()
+                    ->label('Harga Dari')
+                    ->money('MYR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration_hours')
+                    ->label('Jam')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->emptyStateHeading('Belum ada pakej')
+            ->emptyStateDescription('Tambah pakej perkahwinan supaya pelanggan tahu harga dan deliverables anda.')
+            ->emptyStateIcon('heroicon-o-currency-dollar')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

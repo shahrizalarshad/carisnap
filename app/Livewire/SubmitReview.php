@@ -59,6 +59,8 @@ class SubmitReview extends Component
 
     public function render()
     {
-        return view('livewire.submit-review');
+        return view('livewire.submit-review')
+            ->title('Tinggalkan Ulasan — CariSnap')
+            ->layoutData(['noIndex' => true]);
     }
 }

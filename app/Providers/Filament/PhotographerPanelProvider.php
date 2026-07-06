@@ -2,16 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Photographer\Pages\Dashboard;
 use App\Http\Middleware\EnsurePhotographerHasProfile;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -32,13 +31,10 @@ class PhotographerPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Photographer/Resources'), for: 'App\\Filament\\Photographer\\Resources')
             ->discoverPages(in: app_path('Filament/Photographer/Pages'), for: 'App\\Filament\\Photographer\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Photographer/Widgets'), for: 'App\\Filament\\Photographer\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

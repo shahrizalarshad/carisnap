@@ -53,7 +53,9 @@ class ReviewQuote extends Component
 
     public function render()
     {
-        return view('livewire.review-quote');
+        return view('livewire.review-quote')
+            ->title('Semak Sebut Harga — CariSnap')
+            ->layoutData(['noIndex' => true]);
     }
 
     private function quoteCanBeRespondedTo(): bool

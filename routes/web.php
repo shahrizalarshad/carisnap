@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\BrowsePhotographers;
 use App\Livewire\MyBookingRequests;
 use App\Livewire\PhotographerOnboarding;
@@ -16,6 +17,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/photographers', BrowsePhotographers::class)->name('photographers.index');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/quotes/{quote}', ReviewQuote::class)->name('quotes.show')->middleware('signed');
 Route::get('/booking-requests/{bookingRequest}/review', SubmitReview::class)->name('reviews.create')->middleware('signed');

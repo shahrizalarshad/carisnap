@@ -4,55 +4,29 @@ namespace App\Notifications;
 
 use App\Models\BookingRequest;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class BookingDeclinedNotification extends Notification
+class BookingDeclinedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(public BookingRequest $request)
-    {
-        //
-    }
+    public function __construct(public BookingRequest $request) {}
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Kemaskini Permohonan Tempahan CariSnap')
+            ->subject('Kemaskini permintaan tempahan anda')
             ->greeting('Hai!')
-            ->line('Dukacita dimaklumkan bahawa permohonan tempahan anda dengan '.$this->request->profile->business_name.' telah ditolak.')
-            ->line('Ini mungkin kerana jurugambar tidak tersedia pada tarikh tersebut atau faktor lain.')
-            ->line('Jangan risau, masih ada ramai lagi jurugambar hebat di CariSnap!')
-            ->action('Cari Jurugambar Lain', url('/photographers'))
+            ->line($this->request->profile->business_name.' tidak dapat menerima permintaan tempahan anda buat masa ini.')
+            ->line('Jangan risau — masih banyak jurugambar hebat di CariSnap yang mungkin available untuk tarikh anda.')
+            ->action('Cari Jurugambar Lain', route('photographers.index'))
             ->line('Terima kasih kerana menggunakan CariSnap.');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
     }
 }

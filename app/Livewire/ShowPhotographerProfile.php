@@ -33,11 +33,20 @@ class ShowPhotographerProfile extends Component
 
     public function render()
     {
+        $description = $this->profile->bio
+            ? Str::limit($this->profile->bio, 155)
+            : "Jurugambar perkahwinan di {$this->profile->location_area}. Lihat portfolio, pakej, dan tarikh kekosongan di CariSnap.";
+
+        $ogImage = $this->profile->portfolioItems->first()?->getFirstMediaUrl('portfolio', 'display')
+            ?: asset('images/og-default.svg');
+
         return view('livewire.show-photographer-profile')
-            ->title($this->profile->business_name.' - CariSnap')
+            ->title($this->profile->business_name.' — Jurugambar Perkahwinan | CariSnap')
             ->layoutData([
-                'metaDescription' => Str::limit($this->profile->bio, 150),
-                'ogImage' => $this->profile->portfolioItems->first()?->getFirstMediaUrl('portfolio', 'display'),
+                'metaDescription' => $description,
+                'ogImage' => $ogImage,
+                'ogType' => 'profile',
+                'canonical' => route('photographers.show', $this->profile->slug),
             ]);
     }
 }

@@ -15,7 +15,11 @@ class AvailabilityResource extends Resource
 {
     protected static ?string $model = Availability::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+
+    protected static ?string $navigationLabel = 'Kekosongan';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -36,26 +40,18 @@ class AvailabilityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('profile_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('date')
-                    ->date()
+                    ->label('Tarikh')
+                    ->date('d/m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge(),
             ])
-            ->filters([
-                //
-            ])
+            ->defaultSort('date')
+            ->emptyStateHeading('Tiada tarikh kekosongan')
+            ->emptyStateDescription('Tambah tarikh yang anda available supaya pelanggan boleh tapis carian ikut tarikh majlis.')
+            ->emptyStateIcon('heroicon-o-calendar-days')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -25,7 +25,7 @@ class BookingRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-inbox';
 
-    protected static ?string $navigationLabel = 'Booking Requests';
+    protected static ?string $navigationLabel = 'Permintaan Tempahan';
 
     protected static ?string $modelLabel = 'Booking Request';
 
@@ -84,6 +84,9 @@ class BookingRequestResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->emptyStateHeading('Tiada permintaan tempahan lagi')
+            ->emptyStateDescription('Bila pelanggan hantar permintaan dari profil anda, ia akan muncul di sini.')
+            ->emptyStateIcon('heroicon-o-inbox')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options(BookingStatus::class),

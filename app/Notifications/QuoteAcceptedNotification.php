@@ -4,54 +4,34 @@ namespace App\Notifications;
 
 use App\Models\Quote;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class QuoteAcceptedNotification extends Notification
+class QuoteAcceptedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(public Quote $quote)
-    {
-        //
-    }
+    public function __construct(public Quote $quote) {}
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject('Sebut Harga Anda Telah Diterima! 🥳')
-            ->greeting('Tahniah '.$notifiable->name.'!')
-            ->line('Klien ('.($this->quote->bookingRequest->guest_name ?? $this->quote->bookingRequest->client->name).') telah menerima sebut harga anda untuk tempahan '.$this->quote->bookingRequest->event_type->value.'.')
-            ->line('Sila hubungi klien segera melalui WhatsApp atau E-mel untuk mengesahkan perincian akhir.')
-            ->action('Lihat Tempahan', url('/photographer/booking-requests'))
-            ->line('Semoga berjaya!');
-    }
+        $clientName = $this->quote->bookingRequest->guest_name
+            ?? $this->quote->bookingRequest->client?->name
+            ?? 'Pelanggan';
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
+        return (new MailMessage)
+            ->subject('Sebut harga anda diterima!')
+            ->greeting('Tahniah, '.$notifiable->name.'!')
+            ->line($clientName.' telah **menerima** sebut harga anda untuk majlis perkahwinan.')
+            ->line('Jumlah: RM'.number_format($this->quote->amount))
+            ->line('Sila hubungi pelanggan melalui WhatsApp atau e-mel untuk bincang lanjut.')
+            ->action('Lihat Permintaan', url('/photographer/booking-requests'))
+            ->line('Semoga majlis berjalan lancar!');
     }
 }

@@ -1,5 +1,28 @@
 
 
+@push('meta')
+    <script type="application/ld+json">
+        {!! json_encode(array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'ProfessionalService',
+            'name' => $profile->business_name,
+            'description' => \Illuminate\Support\Str::limit($profile->bio, 200),
+            'url' => route('photographers.show', $profile->slug),
+            'areaServed' => $profile->coverage_areas,
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => $profile->location_area,
+                'addressCountry' => 'MY',
+            ],
+            'aggregateRating' => $profile->reviews_count > 0 ? [
+                '@type' => 'AggregateRating',
+                'ratingValue' => round($profile->reviews_avg_rating, 1),
+                'reviewCount' => $profile->reviews_count,
+            ] : null,
+        ], fn ($value) => $value !== null), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+    </script>
+@endpush
+
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>

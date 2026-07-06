@@ -2,55 +2,31 @@
 
 namespace App\Notifications;
 
+use App\Models\PhotographerProfile;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProfileApprovedNotification extends Notification
+class ProfileApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(public PhotographerProfile $profile) {}
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Profil CariSnap Anda Telah Disahkan!')
-            ->greeting('Tahniah '.$notifiable->name.'!')
-            ->line('Profil jurugambar anda di CariSnap telah disemak dan disahkan oleh admin.')
-            ->line('Klien kini boleh melihat profil anda dan membuat tempahan.')
-            ->action('Lihat Profil', url('/'.$notifiable->photographerProfile->slug))
-            ->line('Selamat maju jaya!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
+            ->subject('Profil CariSnap anda telah disahkan!')
+            ->greeting('Tahniah, '.$notifiable->name.'!')
+            ->line('Profil **'.$this->profile->business_name.'** telah disemak dan disahkan oleh pasukan CariSnap.')
+            ->line('Pelanggan kini boleh cari studio anda, lihat portfolio, dan hantar permintaan tempahan.')
+            ->action('Lihat Profil Public', route('photographers.show', $this->profile->slug))
+            ->line('Tip: pastikan portfolio, pakej, dan tarikh kekosongan sentiasa dikemaskini untuk lebih banyak tempahan.');
     }
 }
