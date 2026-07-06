@@ -38,7 +38,7 @@ class QuoteReceivedNotification extends Notification
         return (new MailMessage)
             ->subject('Sebut Harga Baharu dari CariSnap')
             ->greeting('Hai!')
-            ->line('Anda telah menerima sebut harga baharu daripada '.$this->quote->bookingRequest->photographerProfile->business_name.'.')
+            ->line('Anda telah menerima sebut harga baharu daripada '.$this->quote->bookingRequest->profile->business_name.'.')
             ->line('Sila klik butang di bawah untuk menyemak dan memberi maklum balas.')
             ->action('Semak Sebut Harga', URL::signedRoute('quotes.show', ['quote' => $this->quote->id]))
             ->line('Sebut harga ini sah sehingga '.$this->quote->valid_until->format('d/m/Y').'.');

@@ -2,16 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Actions\CreateBookingRequest as CreateBookingRequestAction;
+use App\Actions\CreateBookingRequestData;
 use App\Enums\AvailabilityStatus;
-use App\Enums\BookingStatus;
 use App\Enums\EventType;
-use App\Models\BookingRequest;
 use App\Models\Package;
 use App\Models\PhotographerProfile;
-use App\Notifications\BookingRequestReceivedNotification;
-use App\Notifications\NewBookingRequestNotification;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -114,35 +111,24 @@ class BookingRequestForm extends Component
             ->exists();
     }
 
-    public function submit()
+    public function submit(CreateBookingRequestAction $createBookingRequest)
     {
         $this->validate();
 
-        $bookingRequest = BookingRequest::create([
-            'profile_id' => $this->profile->id,
-            'client_id' => Auth::id(),
-            'package_id' => $this->selectedPackage?->id,
-            'guest_name' => Auth::check() ? null : $this->guest_name,
-            'guest_phone' => Auth::check() ? null : $this->guest_phone,
-            'guest_email' => Auth::check() ? null : $this->guest_email,
-            'event_type' => EventType::from($this->event_type),
-            'event_date' => $this->event_date,
-            'location' => $this->location,
-            'budget_from' => (int) $this->budget_from,
-            'budget_to' => (int) $this->budget_to,
-            'message' => $this->message,
-            'status' => BookingStatus::Pending,
-        ]);
-
-        // Notify photographer
-        $this->profile->user->notify(new NewBookingRequestNotification($bookingRequest));
-
-        // Notify client/guest
-        $email = Auth::check() ? Auth::user()->email : $this->guest_email;
-        if ($email) {
-            Notification::route('mail', $email)
-                ->notify(new BookingRequestReceivedNotification($bookingRequest));
-        }
+        $createBookingRequest->execute(new CreateBookingRequestData(
+            profile: $this->profile,
+            eventDate: $this->event_date,
+            location: $this->location,
+            budgetFrom: (int) $this->budget_from,
+            budgetTo: (int) $this->budget_to,
+            eventType: EventType::from($this->event_type),
+            message: $this->message,
+            clientId: Auth::id(),
+            guestName: Auth::check() ? null : $this->guest_name,
+            guestPhone: Auth::check() ? null : $this->guest_phone,
+            guestEmail: Auth::check() ? null : $this->guest_email,
+            packageId: $this->selectedPackage?->id,
+        ));
 
         $this->isSubmitted = true;
     }

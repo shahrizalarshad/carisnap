@@ -28,32 +28,87 @@
     </head>
     <body class="font-sans antialiased bg-gray-50 text-gray-900 w-full overflow-x-hidden min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <header
+            x-data="{ open: false }"
+            class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100"
+        >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="/styleguide" wire:navigate class="font-heading font-bold text-2xl tracking-tight text-brand-600">
+                        <a href="{{ route('home') }}" wire:navigate class="font-heading font-bold text-2xl tracking-tight text-brand-600">
                             CariSnap.
                         </a>
                     </div>
                     
                     <!-- Mobile Menu Button -->
                     <div class="flex items-center sm:hidden">
-                        <button type="button" class="text-gray-500 hover:text-gray-900 focus:outline-none p-2">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <button
+                            type="button"
+                            @click="open = !open"
+                            class="text-gray-500 hover:text-gray-900 focus:outline-none p-2"
+                            :aria-expanded="open"
+                            aria-label="Toggle menu"
+                        >
+                            <svg x-show="!open" class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <svg x-show="open" x-cloak class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
                     
                     <!-- Desktop Nav -->
-                    <nav class="hidden sm:flex space-x-8">
-                        <a href="/styleguide" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">Styleguide</a>
-                        <a href="#" class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">Log In</a>
-                        <a href="#" class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 rounded-full text-sm font-medium transition-colors">Join as Pro</a>
+                    <nav class="hidden sm:flex items-center gap-1">
+                        <a href="{{ route('photographers.index') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                            Cari Jurugambar
+                        </a>
+                        @auth
+                            <a href="{{ route('dashboard') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                                Log In
+                            </a>
+                            <a href="{{ route('register') }}" wire:navigate class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2 rounded-full text-sm font-medium transition-colors ml-2">
+                                Join as Pro
+                            </a>
+                        @endauth
                     </nav>
                 </div>
+            </div>
+
+            <!-- Mobile Nav -->
+            <div
+                x-show="open"
+                x-cloak
+                x-transition:enter="transition ease-out duration-150"
+                x-transition:enter-start="opacity-0 -translate-y-1"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-1"
+                class="sm:hidden border-t border-gray-100 bg-white"
+            >
+                <nav class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+                    <a href="{{ route('photographers.index') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                        Cari Jurugambar
+                    </a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                            Log In
+                        </a>
+                        <a href="{{ route('register') }}" wire:navigate @click="open = false" class="bg-brand-600 text-white hover:bg-brand-700 px-4 py-2.5 rounded-full text-sm font-medium transition-colors text-center mt-1">
+                            Join as Pro
+                        </a>
+                    @endauth
+                </nav>
             </div>
         </header>
 
@@ -68,6 +123,11 @@
                 <p class="text-center text-sm text-gray-500 font-medium">
                     &copy; {{ date('Y') }} CariSnap. Hak cipta terpelihara.
                 </p>
+                @if (app()->environment('local'))
+                    <p class="text-center mt-2">
+                        <a href="/styleguide" wire:navigate class="text-xs text-gray-400 hover:text-brand-600 transition-colors">Styleguide (dev)</a>
+                    </p>
+                @endif
             </div>
         </footer>
 

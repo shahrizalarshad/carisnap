@@ -27,16 +27,25 @@ class PortfolioItem extends Model implements HasMedia
         ];
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('portfolio')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumbnail')
             ->width(400)
             ->format('webp')
+            ->performOnCollections('portfolio')
             ->queued();
 
         $this->addMediaConversion('display')
             ->width(1200)
             ->format('webp')
+            ->performOnCollections('portfolio')
             ->queued();
     }
 

@@ -2,15 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Actions\CreateBookingRequest as CreateBookingRequestAction;
+use App\Actions\CreateBookingRequestData;
 use App\Enums\AvailabilityStatus;
-use App\Enums\BookingStatus;
 use App\Enums\EventType;
-use App\Mail\BookingRequestConfirmation;
-use App\Mail\BookingRequestReceived;
-use App\Models\BookingRequest;
 use App\Models\PhotographerProfile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class CreateBookingRequest extends Component
@@ -78,42 +75,43 @@ class CreateBookingRequest extends Component
         ];
     }
 
-    public function submit()
+    public function submit(CreateBookingRequestAction $createBookingRequest)
     {
         $this->validate();
 
+        [$budgetFrom, $budgetTo] = $this->parseBudgetRange();
+
+        $createBookingRequest->execute(new CreateBookingRequestData(
+            profile: $this->profile,
+            eventDate: $this->event_date,
+            location: $this->location,
+            budgetFrom: $budgetFrom,
+            budgetTo: $budgetTo,
+            eventType: EventType::Wedding,
+            message: $this->message,
+            clientId: Auth::id(),
+            guestName: Auth::check() ? null : $this->guest_name,
+            guestPhone: Auth::check() ? null : $this->guest_phone,
+            guestEmail: Auth::check() ? null : $this->guest_email,
+        ));
+
+        $this->success = true;
+    }
+
+    /**
+     * @return array{0: int, 1: int}
+     */
+    protected function parseBudgetRange(): array
+    {
         $budgetParts = explode('-', $this->budget_range);
         $budgetFrom = isset($budgetParts[0]) ? (int) $budgetParts[0] : 0;
         $budgetTo = isset($budgetParts[1]) ? (int) $budgetParts[1] : 0;
 
         if ($budgetTo === 0 && count($budgetParts) === 1 && str_contains($this->budget_range, '+')) {
-            $budgetTo = 99999; // For "5000+"
+            $budgetTo = 99999;
         }
 
-        $booking = BookingRequest::create([
-            'profile_id' => $this->profile->id,
-            'client_id' => Auth::id(),
-            'event_type' => EventType::Wedding,
-            'event_date' => $this->event_date,
-            'location' => $this->location,
-            'budget_from' => $budgetFrom,
-            'budget_to' => $budgetTo,
-            'message' => $this->message,
-            'status' => BookingStatus::Pending,
-            'guest_name' => Auth::check() ? null : $this->guest_name,
-            'guest_phone' => Auth::check() ? null : $this->guest_phone,
-            'guest_email' => Auth::check() ? null : $this->guest_email,
-        ]);
-
-        // Queue Emails
-        Mail::to($this->profile->user->email)->send(new BookingRequestReceived($booking));
-
-        $clientEmail = Auth::check() ? Auth::user()->email : $this->guest_email;
-        if ($clientEmail) {
-            Mail::to($clientEmail)->send(new BookingRequestConfirmation($booking));
-        }
-
-        $this->success = true;
+        return [$budgetFrom, $budgetTo];
     }
 
     public function render()

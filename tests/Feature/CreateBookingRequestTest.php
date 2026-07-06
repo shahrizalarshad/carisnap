@@ -2,19 +2,19 @@
 
 use App\Enums\AvailabilityStatus;
 use App\Livewire\CreateBookingRequest;
-use App\Mail\BookingRequestConfirmation;
-use App\Mail\BookingRequestReceived;
 use App\Models\PhotographerProfile;
 use App\Models\User;
+use App\Notifications\BookingRequestReceivedNotification;
+use App\Notifications\NewBookingRequestNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 it('can submit a booking request as a guest', function () {
-    Mail::fake();
+    Notification::fake();
 
     $profile = PhotographerProfile::factory()->create();
 
@@ -39,12 +39,12 @@ it('can submit a booking request as a guest', function () {
         'client_id' => null,
     ]);
 
-    Mail::assertQueued(BookingRequestReceived::class);
-    Mail::assertQueued(BookingRequestConfirmation::class);
+    Notification::assertSentTo($profile->user, NewBookingRequestNotification::class);
+    Notification::assertSentOnDemand(BookingRequestReceivedNotification::class);
 });
 
 it('can submit a booking request as an authenticated user', function () {
-    Mail::fake();
+    Notification::fake();
 
     $profile = PhotographerProfile::factory()->create();
     $user = User::factory()->create();
@@ -65,14 +65,13 @@ it('can submit a booking request as an authenticated user', function () {
         'location' => 'Selangor',
     ]);
 
-    Mail::assertQueued(BookingRequestReceived::class);
-    Mail::assertQueued(BookingRequestConfirmation::class);
+    Notification::assertSentTo($profile->user, NewBookingRequestNotification::class);
+    Notification::assertSentOnDemand(BookingRequestReceivedNotification::class);
 });
 
 it('shows warning when event date is not explicitly available', function () {
     $profile = PhotographerProfile::factory()->create();
 
-    // Create an availability that does NOT match the test date
     $profile->availabilities()->create([
         'date' => date('Y-m-d', strtotime('+10 days')),
         'status' => AvailabilityStatus::Available,

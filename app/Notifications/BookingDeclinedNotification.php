@@ -37,7 +37,7 @@ class BookingDeclinedNotification extends Notification
         return (new MailMessage)
             ->subject('Kemaskini Permohonan Tempahan CariSnap')
             ->greeting('Hai!')
-            ->line('Dukacita dimaklumkan bahawa permohonan tempahan anda dengan '.$this->request->photographerProfile->business_name.' telah ditolak.')
+            ->line('Dukacita dimaklumkan bahawa permohonan tempahan anda dengan '.$this->request->profile->business_name.' telah ditolak.')
             ->line('Ini mungkin kerana jurugambar tidak tersedia pada tarikh tersebut atau faktor lain.')
             ->line('Jangan risau, masih ada ramai lagi jurugambar hebat di CariSnap!')
             ->action('Cari Jurugambar Lain', url('/photographers'))

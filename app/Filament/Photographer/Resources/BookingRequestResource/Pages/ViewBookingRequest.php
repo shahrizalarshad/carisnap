@@ -3,14 +3,17 @@
 namespace App\Filament\Photographer\Resources\BookingRequestResource\Pages;
 
 use App\Filament\Photographer\Resources\BookingRequestResource;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ViewRecord;
 
-class ListBookingRequests extends ListRecords
+class ViewBookingRequest extends ViewRecord
 {
     protected static string $resource = BookingRequestResource::class;
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            BookingRequestResource::makeSendQuotePageAction(),
+            BookingRequestResource::makeDeclinePageAction(),
+        ];
     }
 }

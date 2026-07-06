@@ -2,6 +2,7 @@
 
 namespace App\Filament\Photographer\Resources;
 
+use App\Enums\EventType;
 use App\Filament\Photographer\Resources\PortfolioItemResource\Pages;
 use App\Models\PortfolioItem;
 use Filament\Forms;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,7 +18,13 @@ class PortfolioItemResource extends Resource
 {
     protected static ?string $model = PortfolioItem::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
+
+    protected static ?string $navigationLabel = 'Portfolio';
+
+    protected static ?string $modelLabel = 'Portfolio Item';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -24,18 +32,38 @@ class PortfolioItemResource extends Resource
             ->schema([
                 Forms\Components\Hidden::make('profile_id')
                     ->default(fn () => auth()->user()->profile?->id),
-                SpatieMediaLibraryFileUpload::make('image')
+                SpatieMediaLibraryFileUpload::make('portfolio')
+                    ->label('Photo')
                     ->collection('portfolio')
-                    ->required(),
-                Forms\Components\TextInput::make('event_type')
+                    ->image()
+                    ->imageEditor()
+                    ->maxSize(10240)
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('caption')
-                    ->maxLength(255),
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('event_type')
+                    ->label('Event Type')
+                    ->options(EventType::class)
+                    ->default(EventType::Wedding)
+                    ->required()
+                    ->disabled()
+                    ->dehydrated(),
+                Forms\Components\Textarea::make('caption')
+                    ->label('Caption')
+                    ->rows(2)
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
-                    ->required()
+                    ->label('Sort Order')
                     ->numeric()
-                    ->default(0),
+                    ->minValue(0)
+                    ->default(function (): int {
+                        $max = PortfolioItem::query()
+                            ->where('profile_id', auth()->user()->profile?->id)
+                            ->max('sort_order');
+
+                        return (int) $max + 1;
+                    })
+                    ->required(),
             ]);
     }
 
@@ -43,30 +71,33 @@ class PortfolioItemResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('profile_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('event_type')
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('portfolio')
+                    ->label('Photo')
+                    ->collection('portfolio')
+                    ->conversion('thumbnail')
+                    ->square()
+                    ->size(60),
                 Tables\Columns\TextColumn::make('caption')
-                    ->searchable(),
+                    ->label('Caption')
+                    ->searchable()
+                    ->limit(40)
+                    ->placeholder('—'),
+                Tables\Columns\TextColumn::make('event_type')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->numeric()
+                    ->label('Order')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Uploaded')
+                    ->since()
+                    ->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->defaultSort('sort_order')
+            ->reorderable('sort_order')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -77,9 +108,7 @@ class PortfolioItemResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
