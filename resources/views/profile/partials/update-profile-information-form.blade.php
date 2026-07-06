@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            Kemas kini nama dan alamat e-mel akaun anda.
+            Kemas kini nama, e-mel, dan nombor telefon akaun anda.
         </p>
     </header>
 
@@ -46,6 +46,15 @@
                 </div>
             @endif
         </div>
+
+        @if ($user->role === \App\Enums\UserRole::Client)
+            <div>
+                <x-input-label for="phone" value="Telefon" />
+                <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $user->phone)" autocomplete="tel" />
+                <p class="mt-1 text-xs text-gray-500">Nombor ini digunakan untuk pautkan tempahan tetamu ke akaun anda.</p>
+                <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+            </div>
+        @endif
 
         <div class="flex items-center gap-4">
             <x-primary-button>Simpan</x-primary-button>
