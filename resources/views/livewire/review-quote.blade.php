@@ -42,7 +42,7 @@
                             </div>
                             <div class="text-right">
                                 <span class="text-gray-500 text-sm block">Sah sehingga:</span>
-                                <span class="font-medium {{ $quote->valid_until < now() ? 'text-red-500' : 'text-gray-900' }}">
+                                <span class="font-medium {{ now()->toDateString() > $quote->valid_until->toDateString() ? 'text-red-500' : 'text-gray-900' }}">
                                     {{ \Carbon\Carbon::parse($quote->valid_until)->format('d/m/Y') }}
                                 </span>
                             </div>
@@ -59,7 +59,7 @@
 
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
                     @if($quote->status === \App\Enums\QuoteStatus::Sent)
-                        @if($quote->valid_until >= now())
+                        @if(now()->toDateString() <= $quote->valid_until->toDateString())
                             <button wire:click="decline" wire:confirm="Adakah anda pasti untuk MENOLAK sebut harga ini?" class="px-6 py-3 border border-red-500 text-red-500 font-medium rounded-md hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 text-center">
                                 Tolak Sebut Harga
                             </button>

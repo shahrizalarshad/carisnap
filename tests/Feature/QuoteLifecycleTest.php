@@ -102,6 +102,20 @@ it('does not allow accepting a quote past its valid_until date', function () {
         ->and($quote->bookingRequest->status)->toBe(BookingStatus::Quoted);
 });
 
+it('allows accepting a quote on its valid_until date', function () {
+    $quote = Quote::factory()->create([
+        'status' => QuoteStatus::Sent,
+        'valid_until' => now()->toDateString(),
+    ]);
+    $quote->bookingRequest->update(['status' => BookingStatus::Quoted]);
+
+    Livewire::test(ReviewQuote::class, ['quote' => $quote])
+        ->call('accept');
+
+    $quote->refresh();
+    expect($quote->status)->toBe(QuoteStatus::Accepted);
+});
+
 it('shows expired message for quotes past valid_until date', function () {
     $quote = Quote::factory()->create([
         'status' => QuoteStatus::Sent,

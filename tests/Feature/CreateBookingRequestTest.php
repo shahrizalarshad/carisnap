@@ -82,6 +82,33 @@ it('shows warning when event date is not explicitly available', function () {
         ->assertSet('showAvailabilityWarning', true);
 });
 
+it('requires phone from authenticated user without phone on file', function () {
+    Notification::fake();
+
+    $profile = PhotographerProfile::factory()->create();
+    $user = User::factory()->create(['phone' => null]);
+    $this->actingAs($user);
+
+    Livewire::test(CreateBookingRequest::class, ['profile' => $profile])
+        ->assertSet('requiresPhone', true)
+        ->set('event_date', date('Y-m-d', strtotime('+2 days')))
+        ->set('location', 'Selangor')
+        ->set('budget_range', '3000-5000')
+        ->call('submit')
+        ->assertHasErrors(['client_phone']);
+
+    Livewire::test(CreateBookingRequest::class, ['profile' => $profile])
+        ->set('event_date', date('Y-m-d', strtotime('+2 days')))
+        ->set('location', 'Selangor')
+        ->set('budget_range', '3000-5000')
+        ->set('client_phone', '0123456789')
+        ->call('submit')
+        ->assertHasNoErrors()
+        ->assertSet('success', true);
+
+    expect($user->fresh()->phone)->toBe('0123456789');
+});
+
 it('does not show warning when event date is available', function () {
     $profile = PhotographerProfile::factory()->create();
 

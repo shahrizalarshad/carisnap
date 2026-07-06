@@ -2,6 +2,7 @@
     'variant' => 'primary', // primary, secondary, outline, ghost
     'size' => 'md', // sm, md, lg
     'href' => null,
+    'wireNavigate' => true,
 ])
 
 @php
@@ -24,7 +25,7 @@ $classes = $baseClasses . ' ' . $sizeClasses[$size] . ' ' . $variantClasses[$var
 @endphp
 
 @if($href)
-    <a href="{{ $href }}" wire:navigate {{ $attributes->except('class')->merge(['class' => $classes]) }}>
+    <a href="{{ $href }}" @if($wireNavigate) wire:navigate @endif {{ $attributes->except('class')->merge(['class' => $classes]) }}>
         {{ $slot }}
     </a>
 @else

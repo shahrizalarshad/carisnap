@@ -30,7 +30,7 @@
     </style>
 @endpush
 
-@push('scripts')
+@push('head-scripts')
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('alpine:init', () => {
@@ -46,9 +46,9 @@
                         breakpoints: {
                             640: { slidesPerView: 2, spaceBetween: 20 },
                             1024: { slidesPerView: 3, spaceBetween: 30 },
-                        }
+                        },
                     });
-                }
+                },
             }));
         });
     </script>
@@ -127,7 +127,7 @@
             <span class="text-gray-600 font-medium">{{ $profile->reviews_count }} ulasan</span>
             @if($profile->instagram_handle)
                 <span class="text-gray-400">|</span>
-                <a href="https://instagram.com/{{ ltrim($profile->instagram_handle, '@') }}" target="_blank" class="text-brand-600 hover:text-brand-700 font-medium">@{{ ltrim($profile->instagram_handle, '@') }}</a>
+                <a href="https://instagram.com/{{ ltrim($profile->instagram_handle, '@') }}" target="_blank" class="text-brand-600 hover:text-brand-700 font-medium">{{ '@' . ltrim($profile->instagram_handle, '@') }}</a>
             @endif
         </div>
     </div>
@@ -232,6 +232,7 @@
                 Hantar Booking Request
             </x-ui.button>
         </div>
+    </div>
 
     <!-- Booking Request Modal -->
     <livewire:create-booking-request :profile="$profile" />

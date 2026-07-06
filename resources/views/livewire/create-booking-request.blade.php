@@ -87,7 +87,18 @@
                             @error('message') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
-                        @guest
+                        @auth
+                            @if ($requiresPhone)
+                                <div class="border-t border-gray-100 pt-4 mt-2 space-y-4">
+                                    <h3 class="font-medium text-gray-900">Maklumat Hubungan</h3>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Telefon (WhatsApp)</label>
+                                        <input type="tel" wire:model="client_phone" placeholder="0123456789" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+                                        @error('client_phone') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            @endif
+                        @else
                             <div class="border-t border-gray-100 pt-4 mt-2 space-y-4">
                                 <h3 class="font-medium text-gray-900">Maklumat Anda</h3>
                                 
@@ -109,7 +120,7 @@
                                     @error('guest_email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                                 </div>
                             </div>
-                        @endguest
+                        @endauth
 
                         <div class="pt-4">
                             <x-ui.button type="submit" variant="primary" class="w-full" size="lg" wire:loading.attr="disabled">

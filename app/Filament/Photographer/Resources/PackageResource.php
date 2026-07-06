@@ -2,6 +2,7 @@
 
 namespace App\Filament\Photographer\Resources;
 
+use App\Enums\EventType;
 use App\Filament\Photographer\Resources\PackageResource\Pages;
 use App\Models\Package;
 use Filament\Forms;
@@ -30,9 +31,14 @@ class PackageResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('event_type')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('event_type')
+                    ->options(collect(EventType::cases())->mapWithKeys(
+                        fn (EventType $type) => [$type->value => ucfirst($type->value)]
+                    ))
+                    ->default(EventType::Wedding)
+                    ->disabled()
+                    ->dehydrated()
+                    ->required(),
                 Forms\Components\TextInput::make('price_from')
                     ->required()
                     ->numeric(),

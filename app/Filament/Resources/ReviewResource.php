@@ -37,7 +37,7 @@ class ReviewResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('bookingRequest.photographerProfile.business_name')
+                Tables\Columns\TextColumn::make('bookingRequest.profile.business_name')
                     ->label('Photographer')
                     ->searchable()
                     ->sortable(),

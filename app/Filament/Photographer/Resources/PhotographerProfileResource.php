@@ -17,6 +17,14 @@ class PhotographerProfileResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static bool $shouldRegisterNavigation = false;
+
+    private const COVERAGE_AREAS = [
+        'Kuala Lumpur' => 'Kuala Lumpur',
+        'Selangor' => 'Selangor',
+        'Putrajaya' => 'Putrajaya',
+    ];
+
     public static function form(Form $form): Form
     {
         return $form
@@ -35,7 +43,9 @@ class PhotographerProfileResource extends Resource
                 Forms\Components\TextInput::make('location_area')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('coverage_areas')
+                Forms\Components\CheckboxList::make('coverage_areas')
+                    ->options(self::COVERAGE_AREAS)
+                    ->columns(1)
                     ->required(),
                 Forms\Components\TextInput::make('instagram_handle')
                     ->maxLength(255),

@@ -28,9 +28,20 @@ class CreateBookingRequest extends Component
 
     public $guest_email = '';
 
+    public string $client_phone = '';
+
+    public bool $requiresPhone = false;
+
     public $showAvailabilityWarning = false;
 
     public $success = false;
+
+    public function mount(): void
+    {
+        if (Auth::check() && blank(Auth::user()->phone)) {
+            $this->requiresPhone = true;
+        }
+    }
 
     public function updatedEventDate($value)
     {
@@ -63,6 +74,8 @@ class CreateBookingRequest extends Component
             $rules['guest_name'] = 'required|string|max:255';
             $rules['guest_phone'] = ['required', 'string', 'regex:/^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/'];
             $rules['guest_email'] = 'nullable|email|max:255';
+        } elseif ($this->requiresPhone) {
+            $rules['client_phone'] = ['required', 'string', 'regex:/^(\+?6?01)[0-46-9]-*[0-9]{7,8}$/'];
         }
 
         return $rules;
@@ -72,12 +85,17 @@ class CreateBookingRequest extends Component
     {
         return [
             'guest_phone.regex' => 'Sila masukkan nombor telefon Malaysia yang sah (contoh: 0123456789).',
+            'client_phone.regex' => 'Sila masukkan nombor telefon Malaysia yang sah (contoh: 0123456789).',
         ];
     }
 
     public function submit(CreateBookingRequestAction $createBookingRequest)
     {
         $this->validate();
+
+        if ($this->requiresPhone) {
+            Auth::user()->update(['phone' => $this->client_phone]);
+        }
 
         [$budgetFrom, $budgetTo] = $this->parseBudgetRange();
 

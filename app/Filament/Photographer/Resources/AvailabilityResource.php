@@ -2,6 +2,7 @@
 
 namespace App\Filament\Photographer\Resources;
 
+use App\Enums\AvailabilityStatus;
 use App\Filament\Photographer\Resources\AvailabilityResource\Pages;
 use App\Models\Availability;
 use Filament\Forms;
@@ -30,9 +31,12 @@ class AvailabilityResource extends Resource
                 Forms\Components\DatePicker::make('date')
                     ->native(false)
                     ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('status')
+                    ->options(collect(AvailabilityStatus::cases())->mapWithKeys(
+                        fn (AvailabilityStatus $status) => [$status->value => ucfirst($status->value)]
+                    ))
+                    ->default(AvailabilityStatus::Available)
+                    ->required(),
             ]);
     }
 

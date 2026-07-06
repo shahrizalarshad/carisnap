@@ -68,7 +68,7 @@
                     </div>
                     <div class="text-sm">
                         <p class="text-gray-500">Sah sehingga</p>
-                        <p class="font-medium {{ $bookingRequest->latestQuote->valid_until->isPast() ? 'text-red-600' : 'text-gray-900' }}">
+                        <p class="font-medium {{ now()->toDateString() > $bookingRequest->latestQuote->valid_until->toDateString() ? 'text-red-600' : 'text-gray-900' }}">
                             {{ $bookingRequest->latestQuote->valid_until->format('d/m/Y') }}
                         </p>
                     </div>
@@ -82,7 +82,7 @@
 
             @if ($bookingRequest->status === \App\Enums\BookingStatus::Quoted)
                 <div class="mt-4">
-                    <x-ui.button variant="primary" href="{{ URL::signedRoute('quotes.show', $bookingRequest->latestQuote) }}">
+                    <x-ui.button variant="primary" :wire-navigate="false" href="{{ URL::signedRoute('quotes.show', $bookingRequest->latestQuote) }}">
                         Semak & Balas Sebut Harga
                     </x-ui.button>
                 </div>

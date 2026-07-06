@@ -40,6 +40,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
         @stack('styles')
+        @stack('head-scripts')
     </head>
     <body class="font-sans antialiased bg-gray-50 text-gray-900 w-full overflow-x-hidden min-h-screen flex flex-col">
         <!-- Header -->
@@ -88,7 +89,7 @@
                                 <a href="/admin" class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
                                     Admin
                                 </a>
-                            @else
+                            @elseif (auth()->user()->hasVerifiedEmail())
                                 <a href="{{ route('bookings.index') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
                                     Tempahan Saya
                                 </a>
@@ -130,7 +131,7 @@
                             <a href="/admin" @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
                                 Admin
                             </a>
-                        @else
+                        @elseif (auth()->user()->hasVerifiedEmail())
                             <a href="{{ route('bookings.index') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
                                 Tempahan Saya
                             </a>

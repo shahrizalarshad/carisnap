@@ -37,6 +37,7 @@ class ViewPhotographerProfile extends ViewRecord
                         ->rows(3)
                         ->maxLength(500),
                 ])
+                ->visible(fn (): bool => is_null($this->record->verified_at))
                 ->action(fn (array $data, RejectPhotographerProfile $action) => $action->execute(
                     $this->record,
                     $data['reason'] ?? null,
