@@ -65,9 +65,19 @@
                             Cari Jurugambar
                         </a>
                         @auth
-                            <a href="{{ route('dashboard') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
-                                Dashboard
-                            </a>
+                            @if (auth()->user()->role === \App\Enums\UserRole::Photographer)
+                                <a href="/photographer" class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                                    Panel Pro
+                                </a>
+                            @elseif (auth()->user()->role === \App\Enums\UserRole::Admin)
+                                <a href="/admin" class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                                    Admin
+                                </a>
+                            @else
+                                <a href="{{ route('bookings.index') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
+                                    Tempahan Saya
+                                </a>
+                            @endif
                         @else
                             <a href="{{ route('login') }}" wire:navigate class="text-gray-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors">
                                 Log In
@@ -97,9 +107,19 @@
                         Cari Jurugambar
                     </a>
                     @auth
-                        <a href="{{ route('dashboard') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                            Dashboard
-                        </a>
+                        @if (auth()->user()->role === \App\Enums\UserRole::Photographer)
+                            <a href="/photographer" @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                Panel Pro
+                            </a>
+                        @elseif (auth()->user()->role === \App\Enums\UserRole::Admin)
+                            <a href="/admin" @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                Admin
+                            </a>
+                        @else
+                            <a href="{{ route('bookings.index') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                Tempahan Saya
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" wire:navigate @click="open = false" class="text-gray-700 hover:text-brand-600 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors">
                             Log In

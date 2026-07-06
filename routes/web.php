@@ -1,8 +1,11 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\BrowsePhotographers;
+use App\Livewire\MyBookingRequests;
 use App\Livewire\ReviewQuote;
+use App\Livewire\ShowMyBookingRequest;
 use App\Livewire\ShowPhotographerProfile;
 use App\Livewire\SubmitReview;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +23,18 @@ Route::get('/styleguide', function () {
     return view('styleguide');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/my-bookings', MyBookingRequests::class)->name('bookings.index');
+    Route::get('/my-bookings/{bookingRequest}', ShowMyBookingRequest::class)->name('bookings.show');
+
+    Route::get('/dashboard', function () {
+        return match (auth()->user()->role) {
+            UserRole::Photographer => redirect('/photographer'),
+            UserRole::Admin => redirect('/admin'),
+            default => redirect()->route('bookings.index'),
+        };
+    })->name('dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

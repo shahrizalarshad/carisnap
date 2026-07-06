@@ -6,6 +6,7 @@ use App\Enums\BookingStatus;
 use App\Enums\EventType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BookingRequest extends Model
@@ -57,6 +58,11 @@ class BookingRequest extends Model
     public function quotes()
     {
         return $this->hasMany(Quote::class);
+    }
+
+    public function latestQuote(): HasOne
+    {
+        return $this->hasOne(Quote::class)->latestOfMany();
     }
 
     public function review()
